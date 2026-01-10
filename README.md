@@ -103,4 +103,50 @@ This separation ensures **accountability and transparency** across all stakehold
 ---
 
 ## 📂 Repository Structure
+```text
+smart-public-distribution-system/
+├── docs/          # Project documentation
+├── hardware/      # Components, wiring, prototype details
+├── firmware/      # ESP32 firmware
+├── web/           # Role-based web portals
+├── backend/       # Backend structure and rules
+├── demo/          # Screenshots and demo material
+└── references/    # Research and SIH material
+
+
+⚠️ Important:
+- The **three backticks** start the code block
+- The **three backticks** end the code block
+- `text` is optional, but recommended for clean formatting
+
+---
+
+## ✅ WHAT THIS DOES
+
+- ✔ Fixed-width font (code look)
+- ✔ Preserves alignment (`├──`)
+- ✔ Looks professional
+- ✔ Exactly like terminal output
+- ✔ Very common in good GitHub READMEs
+
+---
+
+## 🧠 WHY I ORIGINALLY GAVE IT AS TEXT
+
+When writing READMEs:
+- **Explanation sections** → normal text
+- **Structures / commands / outputs** → code blocks
+
+You just hadn’t wrapped it in a code block yet — that’s all.
+
+---
+
+## 🔧 FINAL STEP (SAVE IT)
+
+After fixing README:
+
+```powershell
+git add README.md
+git commit -m "Format repository structure as code block in README"
+git push origin main
 
