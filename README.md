@@ -176,9 +176,8 @@ government digitization and e-governance initiatives.
 
 **Team Members:**
 - Vaishak D. Karkera  
-- <Teammate Name 2>  
-- <Teammate Name 3>  
-- <Teammate Name 4>  
+- Ashwin Suresh  
+- Neha Raj    
 
 **Role:**  
 System Design, Hardware Development, Firmware, Web Interfaces, and Backend Integration
