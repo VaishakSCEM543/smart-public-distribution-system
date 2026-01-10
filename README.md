@@ -98,19 +98,19 @@ to Public Distribution System (PDS) data.
 
 The system includes **three dedicated web portals**:
 
+- **Authority Portal**  
+  Provides government authorities with analytics, monitoring, and audit tools.
+  
 - **Customer Portal**  
   Allows beneficiaries to view transaction confirmation and ration status.
 
 - **Shop Owner Portal**  
   Enables ration shop operators to manage dispensing and monitor inventory.
 
-- **Authority Portal**  
-  Provides government authorities with analytics, monitoring, and audit tools.
 
 This separation ensures **accountability and transparency** across all stakeholders.
 
----  
-### 5️⃣ Web Interface Layer (Role-Based)
+
 
 <img width="1918" height="917" alt="authoritycontrol" src="https://github.com/user-attachments/assets/1165c03a-8a6a-469d-a654-635e33f3d6f0" />
 
