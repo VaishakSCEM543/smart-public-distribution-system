@@ -805,7 +805,7 @@
         
         // Hardcoded secret key for AES encryption (256-bit key)
         // In a production environment, this would be stored securely
-        const SECRET_KEY = "SmartPDS_Encryption_Key_2024_256Bit_Secret!";
+        const SECRET_KEY = "<DEMO_KEY_NOT_FOR_PRODUCTION>";
         
         /**
          * Encrypts plain text using AES encryption
@@ -847,14 +847,15 @@
 
         // Firebase configuration
         const firebaseConfig = {
-            apiKey: "AIzaSyD8tOpjuDF1Xq_3DxNSgkU4dYzE2pBI6mQ",
-            authDomain: "pdssytm.firebaseapp.com",
-            databaseURL: "https://pdssytm-default-rtdb.firebaseio.com",
-            projectId: "pdssytm",
-            storageBucket: "pdssytm.firebasestorage.app",
-            messagingSenderId: "197853991949",
-            appId: "1:197853991949:web:e73009920da00c4e98b144"
-        };
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  databaseURL: "YOUR_DATABASE_URL",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_BUCKET",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+   };
+
 
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
