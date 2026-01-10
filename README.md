@@ -1,42 +1,106 @@
-# \# Smart Public Distribution System (Smart PDS)
+# Smart Public Distribution System (Smart PDS)
 
-# 
+An **end-to-end IoT-based Public Distribution System** designed to ensure **transparent, secure, and accurate delivery of subsidized food grains**, addressing leakage, fraud, and inefficiencies in India’s traditional PDS.
 
-# An end-to-end IoT-based ration distribution system designed to ensure transparent, secure, and accurate delivery of subsidized food grains, addressing leakage, fraud, and inefficiencies in India’s Public Distribution System (PDS).
+---
 
-# 
+## 📌 Problem Background
 
-# ---
+India’s Public Distribution System (PDS) plays a critical role in food security, yet it faces major challenges such as:
 
-# 
+- Large-scale **leakage of subsidized grains**
+- **Manual dependency** and human intervention
+- Inaccurate ration delivery
+- Long queues and authentication failures
+- Lack of real-time transparency and accountability
 
-# \## 🖥️ Web Portals – Screenshots
+These issues result in financial loss to the government and denial of rightful benefits to citizens.
 
-# 
+---
 
-# \### 👤 Customer Portal
+## 💡 Proposed Solution
 
-# !\[Customer Portal](demo/screenshots/customerportal.png)
+**Smart PDS** is a **cyber-physical system** that combines:
 
-# 
+- Automated ration dispensing hardware  
+- Secure user authentication  
+- Cloud-based data logging  
+- Role-based web interfaces  
 
-# \### 🏪 Shop Owner Portal
+to **technically prevent leakage**, rather than merely detecting it after occurrence.
 
-# !\[Shop Owner Portal](demo/screenshots/shopownerportal.png)
+---
 
-# 
+## 🧠 System Overview
 
-# \### 🏛️ Authority Portal
+The system is built as a **four-layer architecture**:
 
-# !\[Authority Portal](demo/screenshots/authoritycontrol.png)
+### 1️⃣ Hardware Layer
+- ESP32-based control unit
+- Load cell with HX711 for precise weight measurement
+- Servo-controlled dispensing mechanism
+- IR sensor for dispense verification
+- OLED display and keypad for user interaction
 
-# 
+> Dispensing is **sensor-verified**, not time-based.
 
-# These role-based web portals enable transparent interaction
+---
 
-# between beneficiaries, ration shop owners, and authorities
+### 2️⃣ Embedded Firmware Layer
+- Authentication validation (Biometric / OTP / QR)
+- Entitlement checks
+- Closed-loop dispensing control
+- Offline transaction caching
+- Fault and error handling
 
-# in the Smart Public Distribution System.
+Developed using **Arduino / C++**.
 
+---
 
+### 3️⃣ Cloud & Backend Layer
+- Firebase (Realtime Database / Firestore)
+- Stores:
+  - Beneficiary data
+  - Transaction logs
+  - Inventory status
+- Enables real-time synchronization and auditability
+
+---
+
+### 4️⃣ Web Interface Layer (Role-Based)
+
+The system includes **three dedicated web portals**:
+
+- **Customer Portal**  
+  For beneficiaries to view transaction confirmation and status.
+
+- **Shop Owner Portal**  
+  For ration shop operators to manage dispensing and inventory visibility.
+
+- **Authority Portal**  
+  For government authorities to monitor transactions, analytics, and alerts.
+
+This separation ensures **accountability and transparency** across all stakeholders.
+
+---
+
+## 🛠️ Technologies Used
+
+### Hardware
+- ESP32  
+- Load Cell + HX711  
+- Servo Motor  
+- IR Sensor  
+- OLED Display  
+- Keypad  
+
+### Software & Tools
+- Arduino IDE  
+- Arduino / C++  
+- Firebase (Realtime DB / Firestore)  
+- HTML, CSS, JavaScript  
+
+---
+
+## 📂 Repository Structure
 
