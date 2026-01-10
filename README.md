@@ -175,9 +175,10 @@ government digitization and e-governance initiatives.
 **Event:** Smart India Hackathon (SIH)
 
 **Team Members:**
-- Vaishak D. Karkera  
+- Vaishak D Karkera  
 - Ashwin Suresh  
-- Neha Raj    
+- Neha Raj
+- Preetham Krishna   
 
 **Role:**  
 System Design, Hardware Development, Firmware, Web Interfaces, and Backend Integration
@@ -186,6 +187,7 @@ System Design, Hardware Development, Firmware, Web Interfaces, and Backend Integ
 
 ## 📄 License
 
-This project is intended for **academic and prototype purposes**.  
-License details will be added in future releases.
+This project is licensed under the **MIT License**.
+See the [LICENSE](LICENSE) file for details.
+
 
