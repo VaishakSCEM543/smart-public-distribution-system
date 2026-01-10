@@ -19,30 +19,46 @@ welfare distribution.
 
 ## 📌 Problem Background
 
-India’s Public Distribution System (PDS) plays a critical role in food security,
-yet it faces major challenges such as:
+India’s Public Distribution System (PDS) plays a vital role in ensuring food
+security, but despite large-scale digitization, **critical issues persist at
+the point of ration delivery**.
 
-- Large-scale **leakage of subsidized grains**
-- High **manual dependency** and human intervention
-- Inaccurate ration delivery
-- Long queues and authentication failures
-- Lack of real-time transparency and accountability
+Key challenges include:
+- **Leakage and diversion** of subsidized food grains
+- Dependence on **manual weighing and dispensing**
+- Inaccurate quantity delivery and authentication failures
+- Limited **real-time monitoring and accountability**
 
-These issues result in financial loss to the government and denial of rightful
-benefits to deserving citizens.
+Most existing solutions focus on **digitizing records** rather than controlling
+the **physical dispensing process**, making it difficult for beneficiaries to
+verify whether the correct quantity has been delivered.
+
+Additionally, **long queues and unpredictable waiting times** at ration shops
+cause inconvenience, particularly for elderly and daily-wage beneficiaries,
+reducing trust and accessibility in the system.
+
+These issues result in **financial losses**, reduced efficiency, and erosion
+of public confidence in welfare distribution mechanisms.
 
 ---
 
 ## 💡 Proposed Solution
 
-**Smart PDS** is a **cyber-physical system** that integrates:
+**Smart PDS** is a **cyber-physical, vending-machine–based ration distribution system**
+designed to eliminate manual intervention at the point of ration delivery.
 
-- Automated ration dispensing hardware  
-- Secure user authentication  
-- Cloud-based data logging  
-- Role-based web interfaces  
+The system automates the **authentication, weighing, and dispensing process**
+using a sensor-verified hardware unit deployed at fair price shops. Ration is
+dispensed **only after successful authentication**, and the quantity delivered
+is continuously verified using load-cell feedback.
 
-to **prevent leakage at the system level**, rather than detecting it after occurrence.
+Each transaction is securely logged to the cloud in real time, enabling
+**auditability, monitoring, and accountability** through role-based web portals
+for beneficiaries, shop owners, and authorities.
+
+By combining **physical control of dispensing** with secure digital tracking,
+Smart PDS prevents leakage at the source rather than detecting it after
+distribution.
 
 ---
 
