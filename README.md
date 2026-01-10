@@ -1,8 +1,22 @@
 # Smart Public Distribution System (Smart PDS)
 
-An **end-to-end IoT-based Public Distribution System** designed to ensure
-**transparent, secure, and accurate delivery of subsidized food grains**,
-addressing leakage, fraud, and inefficiencies in India’s traditional PDS.
+India’s Public Distribution System (PDS) is one of the **largest food security
+networks in the world**, serving **over 800 million beneficiaries** every month.
+Even small inefficiencies in such a large system affect **millions of households**
+and result in significant economic and social consequences.
+
+Multiple studies and government audits estimate that **20–30% of subsidized
+food grains** are lost annually due to diversion, pilferage, and manual
+inefficiencies. This leakage not only causes **large economic losses**
+but also prevents eligible citizens from receiving their full entitlements.
+
+**Smart PDS** proposes a **vending-machine–based ration distribution system**
+that automates the dispensing process at fair price shops. Using a
+sensor-verified dispensing mechanism, the system delivers **exact quantities
+of food grains** only after secure authentication. By integrating encrypted
+cloud-based data logging and role-based digital interfaces, the solution aims
+to **reduce leakage, eliminate manual manipulation, and improve transparency**
+in public welfare distribution.
 
 ---
 
