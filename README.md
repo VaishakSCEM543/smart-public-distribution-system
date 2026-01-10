@@ -109,8 +109,18 @@ The system includes **three dedicated web portals**:
 
 This separation ensures **accountability and transparency** across all stakeholders.
 
----
+---  
+### 5️⃣ Web Interface Layer (Role-Based)
 
+<img width="1918" height="917" alt="authoritycontrol" src="https://github.com/user-attachments/assets/1165c03a-8a6a-469d-a654-635e33f3d6f0" />
+
+
+<img width="1902" height="910" alt="Screenshot 2026-01-11 024212" src="https://github.com/user-attachments/assets/3330c777-aae7-4b29-8107-86e115fff17a" /> 
+
+
+<img width="1900" height="903" alt="shopownerportal" src="https://github.com/user-attachments/assets/85deec62-0380-4dfc-ad39-8ea8366b3d7c" />
+
+---
 ## 🛠️ Technologies Used
 
 ### Hardware
