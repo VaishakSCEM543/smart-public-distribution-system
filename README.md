@@ -113,7 +113,7 @@ smart-public-distribution-system/
 ├── demo/          # Screenshots and demo material
 └── references/    # Research and SIH material
 
-
+```
 ⚠️ Important:
 - The **three backticks** start the code block
 - The **three backticks** end the code block
