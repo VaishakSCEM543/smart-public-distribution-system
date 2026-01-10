@@ -1,39 +1,43 @@
 # Smart Public Distribution System (Smart PDS)
 
-An **end-to-end IoT-based Public Distribution System** designed to ensure **transparent, secure, and accurate delivery of subsidized food grains**, addressing leakage, fraud, and inefficiencies in India’s traditional PDS.
+An **end-to-end IoT-based Public Distribution System** designed to ensure
+**transparent, secure, and accurate delivery of subsidized food grains**,
+addressing leakage, fraud, and inefficiencies in India’s traditional PDS.
 
 ---
 
 ## 📌 Problem Background
 
-India’s Public Distribution System (PDS) plays a critical role in food security, yet it faces major challenges such as:
+India’s Public Distribution System (PDS) plays a critical role in food security,
+yet it faces major challenges such as:
 
 - Large-scale **leakage of subsidized grains**
-- **Manual dependency** and human intervention
+- High **manual dependency** and human intervention
 - Inaccurate ration delivery
 - Long queues and authentication failures
 - Lack of real-time transparency and accountability
 
-These issues result in financial loss to the government and denial of rightful benefits to citizens.
+These issues result in financial loss to the government and denial of rightful
+benefits to deserving citizens.
 
 ---
 
 ## 💡 Proposed Solution
 
-**Smart PDS** is a **cyber-physical system** that combines:
+**Smart PDS** is a **cyber-physical system** that integrates:
 
 - Automated ration dispensing hardware  
 - Secure user authentication  
 - Cloud-based data logging  
 - Role-based web interfaces  
 
-to **technically prevent leakage**, rather than merely detecting it after occurrence.
+to **prevent leakage at the system level**, rather than detecting it after occurrence.
 
 ---
 
 ## 🧠 System Overview
 
-The system is built as a **four-layer architecture**:
+The system follows a **four-layer architecture**:
 
 ### 1️⃣ Hardware Layer
 - ESP32-based control unit
@@ -48,7 +52,7 @@ The system is built as a **four-layer architecture**:
 
 ### 2️⃣ Embedded Firmware Layer
 - Authentication validation (Biometric / OTP / QR)
-- Entitlement checks
+- Entitlement verification
 - Closed-loop dispensing control
 - Offline transaction caching
 - Fault and error handling
@@ -66,6 +70,7 @@ Developed using **Arduino / C++**.
 - Enables real-time synchronization and auditability
 
 ---
+
 ### 4️⃣ 🔐 Security & Data Encryption
 
 Security and data protection are integral to the Smart PDS system.
@@ -74,11 +79,11 @@ Security and data protection are integral to the Smart PDS system.
   before being stored in the Firebase Realtime Database.
 - Encryption is handled at the **application layer**, ensuring that data
   is not stored in plain text in the cloud.
-- All communication between the device, web portals, and backend
+- All communication between devices, web portals, and backend services
   occurs over **secure HTTPS (TLS)** connections.
 - Authentication mechanisms (OTP / credentials) prevent unauthorized access.
 - **Role-based access control** ensures:
-  - Beneficiaries can access only their own data
+  - Beneficiaries access only their own data
   - Shop owners have limited operational privileges
   - Authorities have monitoring and audit-level access
 - Backend access is governed using **Firebase security rules**.
@@ -88,20 +93,23 @@ This approach ensures **confidentiality, integrity, and controlled access**
 to Public Distribution System (PDS) data.
 
 ---
+
 ### 5️⃣ Web Interface Layer (Role-Based)
 
 The system includes **three dedicated web portals**:
 
 - **Customer Portal**  
-  For beneficiaries to view transaction confirmation and status.
+  Allows beneficiaries to view transaction confirmation and ration status.
 
 - **Shop Owner Portal**  
-  For ration shop operators to manage dispensing and inventory visibility.
+  Enables ration shop operators to manage dispensing and monitor inventory.
 
 - **Authority Portal**  
-  For government authorities to monitor transactions, analytics, and alerts.
+  Provides government authorities with analytics, monitoring, and audit tools.
 
 This separation ensures **accountability and transparency** across all stakeholders.
+
+---
 
 ## 🛠️ Technologies Used
 
@@ -116,12 +124,13 @@ This separation ensures **accountability and transparency** across all stakehold
 ### Software & Tools
 - Arduino IDE  
 - Arduino / C++  
-- Firebase (Realtime DB / Firestore)  
+- Firebase (Realtime Database / Firestore)  
 - HTML, CSS, JavaScript  
 
 ---
 
 ## 📂 Repository Structure
+
 ```text
 smart-public-distribution-system/
 ├── docs/          # Project documentation
@@ -132,40 +141,52 @@ smart-public-distribution-system/
 ├── demo/          # Screenshots and demo material
 └── references/    # Research and SIH material
 
+---
 ```
-⚠️ Important:
-- The **three backticks** start the code block
-- The **three backticks** end the code block
-- `text` is optional, but recommended for clean formatting
+## ⚙️ Feasibility & Impact
+
+The Smart PDS system is designed with real-world deployment in mind.
+
+- Built using **low-cost, widely available hardware**
+- Scalable across multiple ration shops and regions
+- Supports **offline operation** with cloud synchronization
+- Minimizes manual intervention, reducing corruption and errors
+- Improves **transparency, accountability, and trust** in public welfare systems
+
+The system is practical, deployable, and aligned with
+government digitization and e-governance initiatives.
 
 ---
 
-## ✅ WHAT THIS DOES
+## 🚀 Future Scope
 
-- ✔ Fixed-width font (code look)
-- ✔ Preserves alignment (`├──`)
-- ✔ Looks professional
-- ✔ Exactly like terminal output
-- ✔ Very common in good GitHub READMEs
-
----
-
-## 🧠 WHY I ORIGINALLY GAVE IT AS TEXT
-
-When writing READMEs:
-- **Explanation sections** → normal text
-- **Structures / commands / outputs** → code blocks
-
-You just hadn’t wrapped it in a code block yet — that’s all.
+- Advanced fraud detection using analytics and AI  
+- Smart inventory forecasting and demand prediction  
+- Mobile application integration for beneficiaries  
+- District- and state-level deployment  
+- Enhanced cryptographic key management  
+- Integration with national identity and welfare platforms  
 
 ---
 
-## 🔧 FINAL STEP (SAVE IT)
+## 👥 Team & Credits
 
-After fixing README:
+**Team Name:** UDBHAV  
+**Event:** Smart India Hackathon (SIH)
 
-```powershell
-git add README.md
-git commit -m "Format repository structure as code block in README"
-git push origin main
+**Team Members:**
+- Vaishak D. Karkera  
+- <Teammate Name 2>  
+- <Teammate Name 3>  
+- <Teammate Name 4>  
+
+**Role:**  
+System Design, Hardware Development, Firmware, Web Interfaces, and Backend Integration
+
+---
+
+## 📄 License
+
+This project is intended for **academic and prototype purposes**.  
+License details will be added in future releases.
 
