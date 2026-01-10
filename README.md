@@ -66,8 +66,29 @@ Developed using **Arduino / C++**.
 - Enables real-time synchronization and auditability
 
 ---
+### 4️⃣ 🔐 Security & Data Encryption
 
-### 4️⃣ Web Interface Layer (Role-Based)
+Security and data protection are integral to the Smart PDS system.
+
+- Sensitive beneficiary and transaction data is **encrypted using AES**
+  before being stored in the Firebase Realtime Database.
+- Encryption is handled at the **application layer**, ensuring that data
+  is not stored in plain text in the cloud.
+- All communication between the device, web portals, and backend
+  occurs over **secure HTTPS (TLS)** connections.
+- Authentication mechanisms (OTP / credentials) prevent unauthorized access.
+- **Role-based access control** ensures:
+  - Beneficiaries can access only their own data
+  - Shop owners have limited operational privileges
+  - Authorities have monitoring and audit-level access
+- Backend access is governed using **Firebase security rules**.
+- Sensitive keys and configuration details are excluded from the public repository.
+
+This approach ensures **confidentiality, integrity, and controlled access**
+to Public Distribution System (PDS) data.
+
+---
+### 5️⃣ Web Interface Layer (Role-Based)
 
 The system includes **three dedicated web portals**:
 
@@ -81,8 +102,6 @@ The system includes **three dedicated web portals**:
   For government authorities to monitor transactions, analytics, and alerts.
 
 This separation ensures **accountability and transparency** across all stakeholders.
-
----
 
 ## 🛠️ Technologies Used
 
