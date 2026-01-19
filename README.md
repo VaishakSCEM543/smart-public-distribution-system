@@ -219,7 +219,7 @@ government digitization and e-governance initiatives.
 
 **Role:**  
 System Design, Hardware Development, Firmware, Web Interfaces, and Backend Integration
-
+  
 ---
 
 ## 📄 License
