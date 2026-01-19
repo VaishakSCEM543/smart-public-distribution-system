@@ -215,7 +215,7 @@ government digitization and e-governance initiatives.
 - Vaishak D Karkera  
 - Ashwin Suresh  
 - Neha Raj
-- Preetham Krishna   
+- Preetham Krishna  
 
 **Role:**  
 System Design, Hardware Development, Firmware, Web Interfaces, and Backend Integration
