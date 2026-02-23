@@ -36,5 +36,3 @@ ESP32 using Arduino IDE
 
 4\. Upload firmware
 
-
-

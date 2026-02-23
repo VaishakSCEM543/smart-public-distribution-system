@@ -2,6 +2,6 @@
 #define DISPLAY_H
 
 void initDisplay();
-void showMessage(String msg);
+void showMessage(String line1, String line2);
 
 #endif
