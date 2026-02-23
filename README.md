@@ -64,6 +64,8 @@ distribution.
 
 ## 🧠 System Overview
 
+![System Architecture](docs/system-architecture.png)
+
 The system follows a **four-layer architecture**:
 
 ### 1️⃣ Hardware Layer
