@@ -64,7 +64,7 @@ distribution.
 
 ## 🧠 System Overview
 
-![System Architecture](docs/system-architecture.png)
+<img width="817" height="518" alt="system-architecture" src="https://github.com/user-attachments/assets/daca8789-0c45-4339-847b-da3438277a95" />
 
 The system follows a **four-layer architecture**:
 
