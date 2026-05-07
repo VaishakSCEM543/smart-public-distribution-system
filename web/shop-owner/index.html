@@ -1140,15 +1140,14 @@
     <script>
         // Firebase configuration
         const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  databaseURL: "YOUR_DATABASE_URL",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_BUCKET",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
-
+            apiKey: "AIzaSyD8tOpjuDF1Xq_3DxNSgkU4dYzE2pBI6mQ",
+            authDomain: "pdssytm.firebaseapp.com",
+            databaseURL: "https://pdssytm-default-rtdb.firebaseio.com",
+            projectId: "pdssytm",
+            storageBucket: "pdssytm.firebasestorage.app",
+            messagingSenderId: "197853991949",
+            appId: "1:197853991949:web:e73009920da00c4e98b144"
+        };
 
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
@@ -1171,9 +1170,10 @@
 
             async loadQueueData() {
                 try {
-                    // Load current queue
+                    // Load current queue (handles both array and object formats)
                     const queueSnapshot = await database.ref('queue/current').once('value');
-                    this.currentQueue = queueSnapshot.exists() ? queueSnapshot.val() : [];
+                    const rawQueue = queueSnapshot.exists() ? queueSnapshot.val() : {};
+                    this.currentQueue = Array.isArray(rawQueue) ? rawQueue : Object.values(rawQueue);
                     
                     // Load served tokens for today
                     const today = new Date().toISOString().split('T')[0];
@@ -1189,9 +1189,10 @@
             }
 
             setupRealtimeListeners() {
-                // Real-time queue updates
+                // Real-time queue updates — live listener so new bookings appear instantly
                 database.ref('queue/current').on('value', (snapshot) => {
-                    this.currentQueue = snapshot.exists() ? snapshot.val() : [];
+                    const rawQueue = snapshot.exists() ? snapshot.val() : {};
+                    this.currentQueue = Array.isArray(rawQueue) ? rawQueue : Object.values(rawQueue);
                     this.updateQueueDisplay();
                     this.updateStatistics();
                 });
@@ -1954,8 +1955,8 @@
                 html += `
                     <div class="border-bottom pb-2 mb-2">
                         <div class="d-flex justify-content-between">
-                            <strong>${transaction.item}</strong>
-                            <span>${transaction.quantity} ${transaction.category === 'Liquid' ? 'L' : 'kg'}</span>
+                            <strong>${transaction.item || 'Item'}</strong>
+                            <span>${transaction.quantityDispensed || transaction.quantity || 0} ${transaction.category === 'Liquid' ? 'L' : 'kg'}</span>
                         </div>
                         <small class="text-muted">${new Date(transaction.timestamp).toLocaleTimeString()}</small>
                     </div>
@@ -1976,7 +1977,7 @@
             Object.keys(transactions).forEach(key => {
                 const transaction = transactions[key];
                 const itemName = transaction.item;
-                const quantity = parseFloat(transaction.quantity);
+                const quantity = parseFloat(transaction.quantityDispensed || transaction.quantity || 0);
                 
                 if (currentStock[itemName]) {
                     currentStock[itemName].quantity -= quantity;

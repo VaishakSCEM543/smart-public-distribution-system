@@ -805,7 +805,7 @@
         
         // Hardcoded secret key for AES encryption (256-bit key)
         // In a production environment, this would be stored securely
-        const SECRET_KEY = "<DEMO_KEY_NOT_FOR_PRODUCTION>";
+        const SECRET_KEY = "SmartPDS_Encryption_Key_2024_256Bit_Secret!";
         
         /**
          * Encrypts plain text using AES encryption
@@ -847,15 +847,14 @@
 
         // Firebase configuration
         const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  databaseURL: "YOUR_DATABASE_URL",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_BUCKET",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
-   };
-
+            apiKey: "AIzaSyD8tOpjuDF1Xq_3DxNSgkU4dYzE2pBI6mQ",
+            authDomain: "pdssytm.firebaseapp.com",
+            databaseURL: "https://pdssytm-default-rtdb.firebaseio.com",
+            projectId: "pdssytm",
+            storageBucket: "pdssytm.firebasestorage.app",
+            messagingSenderId: "197853991949",
+            appId: "1:197853991949:web:e73009920da00c4e98b144"
+        };
 
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
@@ -1065,12 +1064,18 @@
             }
 
             async addToQueue(tokenNumber, bookingData) {
-                this.queue.push({
+                const queueEntry = {
                     token: tokenNumber,
-                    ...bookingData
-                });
+                    date: bookingData.date,
+                    time: bookingData.time,
+                    priority: bookingData.priority,
+                    userEmail: encryptData(this.userEmail),
+                    timestamp: Date.now(),
+                    status: 'waiting',
+                    estimatedWait: this.calculateWaitTime(bookingData.priority)
+                };
                 
-                await database.ref('queue/current').set(this.queue);
+                await database.ref('queue/current').push(queueEntry);
             }
 
             updateQueueDisplay() {
@@ -1266,9 +1271,9 @@
                     dashboardSection.style.display = 'block';
                     
                     // ====================================================================
-                    // ENCRYPTED DATA: Save encrypted login details to Firebase
+                    // Save login event to Firebase (no password stored)
                     // ====================================================================
-                    saveLoginDetails(email, password);
+                    saveLoginDetails(email);
                     
                     // Initialize all systems
                     initCharts();
@@ -1298,18 +1303,15 @@
         });
 
         // ====================================================================
-        // MODIFIED FUNCTION: Save encrypted login details to Firebase
+        // SECURITY FIX: Never store passwords — only log the login event
         // ====================================================================
-        function saveLoginDetails(email, password) {
+        function saveLoginDetails(email) {
+            // NEVER store passwords — only log the login event
             const timestamp = Date.now();
-            database.ref('loginDetails/customers/' + timestamp).set({
-                // ====================================================================
-                // ENCRYPTED DATA: Encrypt email and password before storing
-                // ====================================================================
+            database.ref('loginEvents/' + timestamp).set({
                 email: encryptData(email),
-                password: encryptData(password),
-                // ====================================================================
-                timestamp: timestamp
+                timestamp: timestamp,
+                action: 'login'
             })
             .catch((error) => {
                 console.error("Error saving login details: ", error);
@@ -1389,7 +1391,6 @@
             monthScheduleElement.innerHTML = html;
         }
 
-        // Update recent transactions display
         function updateRecentTransactions(transactions) {
             if (!transactions) {
                 recentTransactionsElement.innerHTML = '<p class="text-center">No recent transactions</p>';
@@ -1402,8 +1403,8 @@
                 html += `
                     <div class="border-bottom pb-2 mb-2">
                         <div class="d-flex justify-content-between">
-                            <strong>${transaction.item}</strong>
-                            <span>${transaction.quantity} ${transaction.category === 'Liquid' ? 'L' : 'kg'}</span>
+                            <strong>${transaction.item || 'Item'}</strong>
+                            <span>${transaction.quantityDispensed || transaction.quantity || 0} ${transaction.category === 'Liquid' ? 'L' : 'kg'}</span>
                         </div>
                         <small class="text-muted">${new Date(transaction.timestamp).toLocaleTimeString()}</small>
                     </div>
