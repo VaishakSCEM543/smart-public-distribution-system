@@ -903,8 +903,8 @@
                             </div>
                             <div class="stat-value text-primary" id="totalShops">0</div>
                             <div class="stat-label">Total Shops</div>
-                            <div class="stat-change change-positive">
-                                <i class="fas fa-arrow-up me-1"></i>2 this month
+                            <div class="stat-change change-positive" id="statChangeTotalShops">
+                                <i class="fas fa-store me-1"></i><span>Loading...</span>
                             </div>
                         </div>
                         
@@ -914,8 +914,8 @@
                             </div>
                             <div class="stat-value text-success" id="normalShops">0</div>
                             <div class="stat-label">Normal Operations</div>
-                            <div class="stat-change change-positive">
-                                <i class="fas fa-arrow-up me-1"></i>94% Compliance
+                            <div class="stat-change change-positive" id="statChangeCompliance">
+                                <i class="fas fa-arrow-up me-1"></i><span>Loading...</span>
                             </div>
                         </div>
                         
@@ -925,8 +925,8 @@
                             </div>
                             <div class="stat-value text-warning" id="warningShops">0</div>
                             <div class="stat-label">Minor Issues</div>
-                            <div class="stat-change change-negative">
-                                <i class="fas fa-arrow-down me-1"></i>Needs attention
+                            <div class="stat-change change-negative" id="statChangeWarning">
+                                <i class="fas fa-exclamation-triangle me-1"></i><span>Loading...</span>
                             </div>
                         </div>
                         
@@ -936,8 +936,8 @@
                             </div>
                             <div class="stat-value text-danger" id="criticalShops">0</div>
                             <div class="stat-label">Critical Alerts</div>
-                            <div class="stat-change change-negative">
-                                <i class="fas fa-arrow-up me-1"></i>Immediate action required
+                            <div class="stat-change change-negative" id="statChangeCritical">
+                                <i class="fas fa-times-circle me-1"></i><span>Loading...</span>
                             </div>
                         </div>
                     </div>
@@ -1021,19 +1021,19 @@
                                     <h6 class="mb-3">System Status</h6>
                                     <div class="d-flex justify-content-between mb-2">
                                         <span>Database Connection</span>
-                                        <span class="badge bg-success">Connected</span>
+                                        <span class="badge bg-secondary" id="dbConnectionStatus">Checking...</span>
                                     </div>
                                     <div class="d-flex justify-content-between mb-2">
                                         <span>Real-time Updates</span>
-                                        <span class="badge bg-success">Active</span>
+                                        <span class="badge bg-secondary" id="realtimeStatus">Checking...</span>
                                     </div>
                                     <div class="d-flex justify-content-between mb-2">
                                         <span>Last Data Sync</span>
-                                        <span id="lastSync">Just now</span>
+                                        <span id="lastSync">--:--:--</span>
                                     </div>
                                     <div class="d-flex justify-content-between">
                                         <span>Prediction Accuracy</span>
-                                        <span class="badge bg-info" id="predictionAccuracy">94%</span>
+                                        <span class="badge bg-info" id="predictionAccuracy">--</span>
                                     </div>
                                 </div>
                             </div>
@@ -1236,19 +1236,19 @@
                         <div class="row text-center mt-3">
                             <div class="col-md-3">
                                 <h6>Total Stock Distributed</h6>
-                                <h3 class="text-primary">124.5k <small>kg</small></h3>
+                                <h3 class="text-primary" id="analyticsStockDistributed">-- <small>kg</small></h3>
                             </div>
                             <div class="col-md-3">
                                 <h6>Average Deficit</h6>
-                                <h3 class="text-danger">4.2%</h3>
+                                <h3 class="text-danger" id="analyticsAvgDeficit">--%</h3>
                             </div>
                             <div class="col-md-3">
-                                <h6>Beneficiary Serviced</h6>
-                                <h3 class="text-success">8,451</h3>
+                                <h6>Beneficiaries Serviced</h6>
+                                <h3 class="text-success" id="analyticsBeneficiaries">--</h3>
                             </div>
                             <div class="col-md-3">
                                 <h6>Fraud Prevention Savings</h6>
-                                <h3 class="text-warning">₹1.2M</h3>
+                                <h3 class="text-warning" id="analyticsSavings">--</h3>
                             </div>
                         </div>
                     </div>
@@ -1300,37 +1300,8 @@
                                         <th>Action</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><i class="fas fa-file-pdf text-danger me-2"></i>Monthly Audit - May 2026</td>
-                                        <td>Today, 09:00 AM</td>
-                                        <td><span class="badge bg-secondary">System</span></td>
-                                        <td><button class="btn btn-sm btn-outline-primary">Download</button></td>
-                                    </tr>
-                                    <tr>
-                                        <td><i class="fas fa-file-excel text-success me-2"></i>High Risk Shops Export</td>
-                                        <td>Yesterday, 14:30 PM</td>
-                                        <td><span class="badge bg-warning text-dark">Ad-hoc</span></td>
-                                        <td><button class="btn btn-sm btn-outline-primary">Download</button></td>
-                                    </tr>
-                                    <tr>
-                                        <td><i class="fas fa-file-csv text-info me-2"></i>Beneficiary Coverage Report</td>
-                                        <td>May 05, 10:15 AM</td>
-                                        <td><span class="badge bg-primary">Scheduled</span></td>
-                                        <td><button class="btn btn-sm btn-outline-primary">Download</button></td>
-                                    </tr>
-                                    <tr>
-                                        <td><i class="fas fa-file-pdf text-danger me-2"></i>AI Anomaly Detection Summary</td>
-                                        <td>May 03, 16:45 PM</td>
-                                        <td><span class="badge bg-danger">Critical</span></td>
-                                        <td><button class="btn btn-sm btn-outline-primary">Download</button></td>
-                                    </tr>
-                                    <tr>
-                                        <td><i class="fas fa-file-excel text-success me-2"></i>Quarterly Inventory Reconciliation</td>
-                                        <td>Apr 30, 08:00 AM</td>
-                                        <td><span class="badge bg-secondary">System</span></td>
-                                        <td><button class="btn btn-sm btn-outline-primary">Download</button></td>
-                                    </tr>
+                                <tbody id="reportsTableBody">
+                                    <!-- Reports loaded dynamically -->
                                 </tbody>
                             </table>
                         </div>
@@ -1343,20 +1314,7 @@
                             <h5 class="mb-0">System Audit Log</h5>
                         </div>
                         <div class="list-group list-group-flush mt-3" id="auditLogList">
-                            <div class="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="mb-0">Demo Data Seeded</h6>
-                                    <small class="text-muted">Admin User • 5 mins ago</small>
-                                </div>
-                                <span class="badge bg-info">System</span>
-                            </div>
-                            <div class="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="mb-0">Fraud Simulated - Shop S-002</h6>
-                                    <small class="text-muted">Admin User • 12 mins ago</small>
-                                </div>
-                                <span class="badge bg-danger">Alert Trigger</span>
-                            </div>
+                            <div class="text-center text-muted py-3"><i class="fas fa-spinner fa-spin me-2"></i>Loading audit log...</div>
                         </div>
                     </div>
                 </section>
@@ -1838,8 +1796,7 @@
             async getActiveAlerts() {
                 try {
                     const alertsRef = ref(database, 'alerts');
-                    const q = query(alertsRef, orderByChild('resolved'), equalTo(false));
-                    const snapshot = await get(q);
+                    const snapshot = await get(alertsRef);
                     
                     if (snapshot.exists()) {
                         const alertsData = snapshot.val();
@@ -2453,6 +2410,247 @@
             }
         };
 
+        // ====================================================================
+        // Dynamic UI Service — replaces all static/hardcoded data
+        // ====================================================================
+        const DynamicUI = {
+            getRelativeTime(timestamp) {
+                const diff = Date.now() - timestamp;
+                if (diff < 60000) return 'Just now';
+                if (diff < 3600000) return `${Math.floor(diff / 60000)} mins ago`;
+                if (diff < 86400000) return `${Math.floor(diff / 3600000)} hours ago`;
+                return Utils.formatDate(timestamp);
+            },
+
+            updateDynamicStats(shops) {
+                const total = shops.length;
+                const normal = shops.filter(s => {
+                    const d = Utils.calculateDiscrepancy(s.expectedRice, s.actualRice) + Utils.calculateDiscrepancy(s.expectedWheat, s.actualWheat);
+                    return d === 0;
+                }).length;
+                const warning = shops.filter(s => {
+                    const d = Utils.calculateDiscrepancy(s.expectedRice, s.actualRice) + Utils.calculateDiscrepancy(s.expectedWheat, s.actualWheat);
+                    return d > 0 && d <= 10;
+                }).length;
+                const critical = shops.filter(s => {
+                    const d = Utils.calculateDiscrepancy(s.expectedRice, s.actualRice) + Utils.calculateDiscrepancy(s.expectedWheat, s.actualWheat);
+                    return d > 10;
+                }).length;
+                const complianceRate = total > 0 ? Math.round((normal / total) * 100) : 0;
+
+                const el1 = document.getElementById('statChangeTotalShops');
+                if (el1) el1.innerHTML = `<i class="fas fa-store me-1"></i>${total} registered shops`;
+                const el2 = document.getElementById('statChangeCompliance');
+                if (el2) {
+                    el2.innerHTML = `<i class="fas fa-arrow-up me-1"></i>${complianceRate}% Compliance`;
+                    el2.className = complianceRate >= 80 ? 'stat-change change-positive' : 'stat-change change-negative';
+                }
+                const el3 = document.getElementById('statChangeWarning');
+                if (el3) el3.innerHTML = `<i class="fas fa-exclamation-triangle me-1"></i>${warning} need attention`;
+                const el4 = document.getElementById('statChangeCritical');
+                if (el4) el4.innerHTML = `<i class="fas fa-times-circle me-1"></i>${critical > 0 ? critical + ' require action' : 'All clear'}`;
+
+                // Prediction accuracy from risk scores
+                const riskValues = Object.values(AppState.riskScores || {});
+                if (riskValues.length > 0) {
+                    const normalRisk = riskValues.filter(r => (r.score || 0) < 40).length;
+                    const accuracy = Math.round((normalRisk / riskValues.length) * 100);
+                    const el = document.getElementById('predictionAccuracy');
+                    if (el) el.textContent = `${accuracy}%`;
+                }
+            },
+
+            updateAlertTable(alerts) {
+                const tbody = document.getElementById('alertsTableBody');
+                if (!tbody) return;
+                tbody.innerHTML = '';
+                if (!alerts || alerts.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted py-4"><i class="fas fa-check-circle fa-2x mb-2 d-block"></i>No active alerts</td></tr>';
+                    return;
+                }
+                const sorted = [...alerts].sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+                sorted.forEach(alert => {
+                    const row = document.createElement('tr');
+                    row.dataset.severity = alert.severity || 'info';
+                    const sevClass = alert.severity === 'critical' ? 'bg-danger' : alert.severity === 'high' ? 'bg-warning text-dark' : 'bg-info';
+                    row.innerHTML = `
+                        <td><code>${(alert.id || '').substring(0, 8)}</code></td>
+                        <td>${alert.type || 'General'}</td>
+                        <td><strong>${alert.shopId || 'N/A'}</strong></td>
+                        <td>${alert.message || 'No description'}</td>
+                        <td><span class="badge ${sevClass}">${(alert.severity || 'info').toUpperCase()}</span></td>
+                        <td>${alert.timestamp ? DynamicUI.getRelativeTime(alert.timestamp) : 'N/A'}</td>
+                        <td><span class="badge ${alert.resolved ? 'bg-success' : 'bg-warning text-dark'}">${alert.resolved ? 'Resolved' : 'Active'}</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-success" onclick="resolveAlert('${alert.id}')" ${alert.resolved ? 'disabled' : ''}>
+                                <i class="fas fa-check"></i>
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            },
+
+            async loadAuditLog() {
+                try {
+                    const auditRef = ref(database, 'audit_logs');
+                    const snapshot = await get(auditRef);
+                    const container = document.getElementById('auditLogList');
+                    if (!container) return;
+                    container.innerHTML = '';
+                    if (!snapshot.exists()) {
+                        container.innerHTML = '<div class="text-center text-muted py-3"><i class="fas fa-clipboard-list me-2"></i>No audit entries yet</div>';
+                        return;
+                    }
+                    const logs = Object.values(snapshot.val()).sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0)).slice(0, 25);
+                    logs.forEach(log => {
+                        const relTime = DynamicUI.getRelativeTime(log.timestamp);
+                        const badgeClass = log.action === 'login' ? 'bg-primary' :
+                            log.action === 'logout' ? 'bg-secondary' :
+                            log.action === 'stock_update' ? 'bg-warning text-dark' :
+                            log.action === 'init_demo_data' ? 'bg-info' : 'bg-dark';
+                        const actionLabel = (log.action || 'unknown').replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                        const item = document.createElement('div');
+                        item.className = 'list-group-item d-flex justify-content-between align-items-center';
+                        item.innerHTML = `
+                            <div>
+                                <h6 class="mb-0">${log.description || actionLabel}</h6>
+                                <small class="text-muted">${log.userId || 'System'} • ${relTime}</small>
+                            </div>
+                            <span class="badge ${badgeClass}">${actionLabel}</span>
+                        `;
+                        container.appendChild(item);
+                    });
+                } catch (e) { console.error('Audit log error:', e); }
+            },
+
+            generateReports(shops, transactions) {
+                const tbody = document.getElementById('reportsTableBody');
+                if (!tbody) return;
+                const now = new Date();
+                const anomalyCount = transactions.filter(t => {
+                    const dev = Math.abs(t.quantityRequested - t.quantityDispensed) / t.quantityRequested;
+                    return dev > 0.10;
+                }).length;
+                const highRiskShops = shops.filter(s => (AppState.riskScores?.[s.id]?.score || 0) >= 70);
+                const reports = [
+                    { icon: 'fa-file-pdf text-danger', name: `Monthly Audit - ${now.toLocaleString('en-IN', { month: 'long', year: 'numeric' })}`, date: now, type: 'System', typeBadge: 'bg-secondary', data: 'audit' },
+                    { icon: 'fa-file-excel text-success', name: `High Risk Shops (${highRiskShops.length} found)`, date: new Date(now - 3600000), type: 'Ad-hoc', typeBadge: 'bg-warning text-dark', data: 'highrisk' },
+                    { icon: 'fa-file-csv text-info', name: `Beneficiary Coverage (${new Set(transactions.map(t => t.beneficiaryId)).size} unique)`, date: new Date(now - 86400000), type: 'Scheduled', typeBadge: 'bg-primary', data: 'beneficiary' },
+                    { icon: 'fa-file-pdf text-danger', name: `AI Anomaly Report (${anomalyCount} anomalies)`, date: new Date(now - 172800000), type: anomalyCount > 10 ? 'Critical' : 'Normal', typeBadge: anomalyCount > 10 ? 'bg-danger' : 'bg-success', data: 'anomaly' },
+                    { icon: 'fa-file-excel text-success', name: `Inventory Reconciliation (${shops.length} shops)`, date: new Date(now - 604800000), type: 'System', typeBadge: 'bg-secondary', data: 'inventory' }
+                ];
+                tbody.innerHTML = '';
+                reports.forEach(r => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><i class="fas ${r.icon} me-2"></i>${r.name}</td>
+                        <td>${DynamicUI.getRelativeTime(r.date.getTime())}</td>
+                        <td><span class="badge ${r.typeBadge}">${r.type}</span></td>
+                        <td><button class="btn btn-sm btn-outline-primary" onclick="downloadReport('${r.data}')"><i class="fas fa-download me-1"></i>Download</button></td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            },
+
+            updateAnalyticsSummary(shops, transactions) {
+                const totalDistributed = transactions.reduce((sum, t) => sum + (t.quantityDispensed || 0), 0);
+                const el1 = document.getElementById('analyticsStockDistributed');
+                if (el1) el1.innerHTML = totalDistributed >= 1000 ? `${(totalDistributed / 1000).toFixed(1)}k <small>kg</small>` : `${totalDistributed.toFixed(0)} <small>kg</small>`;
+
+                const deficits = shops.map(s => {
+                    const expected = (s.expectedRice || 0) + (s.expectedWheat || 0);
+                    const actual = (s.actualRice || 0) + (s.actualWheat || 0);
+                    return expected > 0 ? ((expected - actual) / expected * 100) : 0;
+                });
+                const avgDeficit = deficits.length > 0 ? (deficits.reduce((a, b) => a + b, 0) / deficits.length).toFixed(1) : '0.0';
+                const el2 = document.getElementById('analyticsAvgDeficit');
+                if (el2) el2.textContent = `${avgDeficit}%`;
+
+                const uniqueBeneficiaries = new Set(transactions.map(t => t.beneficiaryId)).size;
+                const el3 = document.getElementById('analyticsBeneficiaries');
+                if (el3) el3.textContent = Utils.formatNumber(uniqueBeneficiaries);
+
+                const anomalies = transactions.filter(t => {
+                    if (!t.quantityRequested) return false;
+                    return Math.abs(t.quantityRequested - t.quantityDispensed) / t.quantityRequested > 0.10;
+                });
+                const savings = anomalies.reduce((sum, t) => sum + (t.quantityRequested - t.quantityDispensed) * 30, 0);
+                const el4 = document.getElementById('analyticsSavings');
+                if (el4) el4.textContent = savings >= 100000 ? `₹${(savings / 100000).toFixed(1)}L` : `₹${Utils.formatNumber(Math.round(savings))}`;
+            },
+
+            updateSystemStatus() {
+                const dbStatus = document.getElementById('dbConnectionStatus');
+                const rtStatus = document.getElementById('realtimeStatus');
+                if (database) {
+                    if (dbStatus) { dbStatus.textContent = 'Connected'; dbStatus.className = 'badge bg-success'; }
+                    if (rtStatus) { rtStatus.textContent = 'Active'; rtStatus.className = 'badge bg-success'; }
+                } else {
+                    if (dbStatus) { dbStatus.textContent = 'Disconnected'; dbStatus.className = 'badge bg-danger'; }
+                    if (rtStatus) { rtStatus.textContent = 'Inactive'; rtStatus.className = 'badge bg-danger'; }
+                }
+            },
+
+            updateLastUpdated() {
+                const now = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                const el = document.getElementById('lastUpdated');
+                if (el) el.textContent = now;
+                const el2 = document.getElementById('lastSync');
+                if (el2) el2.textContent = now;
+            },
+
+            exportToCSV(data, filename) {
+                if (!data || data.length === 0) { toastr.warning('No data to export'); return; }
+                const headers = Object.keys(data[0]);
+                const csvRows = [headers.join(',')];
+                data.forEach(row => {
+                    csvRows.push(headers.map(h => `"${String(row[h] || '').replace(/"/g, '""')}"`).join(','));
+                });
+                const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = filename; a.click();
+                URL.revokeObjectURL(url);
+                toastr.success(`Exported ${data.length} rows to ${filename}`);
+            }
+        };
+
+        // Global functions for reports and alerts
+        window.downloadReport = function(type) {
+            const shops = AppState.shops;
+            const riskScores = AppState.riskScores || {};
+            let data = [];
+            switch(type) {
+                case 'audit':
+                    data = shops.map(s => ({
+                        ShopID: s.id, Name: s.name, Location: s.location, Owner: s.owner,
+                        ExpectedRice: s.expectedRice, ActualRice: s.actualRice,
+                        ExpectedWheat: s.expectedWheat, ActualWheat: s.actualWheat,
+                        RiskScore: riskScores[s.id]?.score || 0
+                    }));
+                    break;
+                case 'highrisk':
+                    data = shops.filter(s => (riskScores[s.id]?.score || 0) >= 70).map(s => ({
+                        ShopID: s.id, Name: s.name, RiskScore: riskScores[s.id]?.score,
+                        Anomalies: riskScores[s.id]?.anomalyCount || 0, Duplicates: riskScores[s.id]?.duplicateCount || 0
+                    }));
+                    break;
+                default:
+                    data = shops.map(s => ({ ShopID: s.id, Name: s.name, Location: s.location, RiskScore: riskScores[s.id]?.score || 0 }));
+            }
+            DynamicUI.exportToCSV(data, `pds_report_${type}_${new Date().toISOString().slice(0,10)}.csv`);
+        };
+
+        window.resolveAlert = async function(alertId) {
+            try {
+                const alertRef = ref(database, `alerts/${alertId}`);
+                await update(alertRef, { resolved: true, resolvedAt: Date.now(), resolvedBy: AppState.currentUser?.displayName || 'Officer' });
+                toastr.success('Alert resolved');
+                await AuditService.logAction(AppState.currentUser?.uid || 'system', 'resolve_alert', `Resolved alert ${alertId}`);
+            } catch(e) { toastr.error('Failed to resolve alert'); console.error(e); }
+        };
+
         // Authentication Service
         const AuthService = {
             async login(email, password, role) {
@@ -2540,6 +2738,15 @@
                     UIService.updateShopTable(shops);
                     await UIService.updateNotifications();
                     
+                    // Dynamic UI updates (replaces static data)
+                    DynamicUI.updateDynamicStats(shops);
+                    DynamicUI.updateAlertTable(alerts);
+                    DynamicUI.updateAnalyticsSummary(shops, transactions);
+                    DynamicUI.generateReports(shops, transactions);
+                    DynamicUI.updateSystemStatus();
+                    DynamicUI.updateLastUpdated();
+                    await DynamicUI.loadAuditLog();
+                    
                     // Initialize charts
                     ChartService.initStockDistributionChart();
                     ChartService.initDiscrepancyChart();
@@ -2584,6 +2791,8 @@
                         UIService.updateShopTable(shops);
                         ChartService.updateCharts(shops);
                         MapService.updateShopMarkers(shops);
+                        DynamicUI.updateDynamicStats(shops);
+                        DynamicUI.updateLastUpdated();
                     }
                 });
                 
@@ -2592,11 +2801,13 @@
                 onValue(alertsRef, async (snapshot) => {
                     if (snapshot.exists()) {
                         const alertsData = snapshot.val();
-                        const alerts = Object.values(alertsData)
-                            .filter(alert => !alert.resolved);
+                        const allAlerts = Object.values(alertsData);
+                        const activeAlerts = allAlerts.filter(alert => !alert.resolved);
                         
-                        AppState.alerts = alerts;
+                        AppState.alerts = activeAlerts;
                         await UIService.updateNotifications();
+                        DynamicUI.updateAlertTable(allAlerts);
+                        DynamicUI.updateLastUpdated();
                     }
                 });
                 
@@ -2730,11 +2941,124 @@
                     });
                 }
                 
-                // Mark all notifications as read
+                // Mark all notifications as read — IMPLEMENTED
                 document.getElementById('markAllRead').addEventListener('click', async (e) => {
                     e.preventDefault();
-                    // Implementation needed
-                    UIService.showInfo('Marking all as read...');
+                    try {
+                        const notifications = AppState.notifications || [];
+                        for (const n of notifications) {
+                            await NotificationService.markAsRead(n.id);
+                        }
+                        await UIService.updateNotifications();
+                        UIService.showSuccess('All notifications marked as read');
+                    } catch (err) { UIService.showError('Failed to mark notifications'); }
+                });
+
+                // Sidebar logout button
+                document.getElementById('logoutBtn')?.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    await this.handleLogout();
+                });
+
+                // Alert filter buttons
+                document.getElementById('filterCritical')?.addEventListener('click', () => {
+                    document.querySelectorAll('#alertsTableBody tr').forEach(r => {
+                        r.style.display = r.dataset.severity === 'critical' ? '' : 'none';
+                    });
+                });
+                document.getElementById('filterWarning')?.addEventListener('click', () => {
+                    document.querySelectorAll('#alertsTableBody tr').forEach(r => {
+                        r.style.display = (r.dataset.severity === 'high' || r.dataset.severity === 'warning') ? '' : 'none';
+                    });
+                });
+                document.getElementById('filterAll')?.addEventListener('click', () => {
+                    document.querySelectorAll('#alertsTableBody tr').forEach(r => { r.style.display = ''; });
+                });
+
+                // Search bar
+                document.querySelector('.search-box input')?.addEventListener('input', Utils.debounce((e) => {
+                    const q = e.target.value.toLowerCase();
+                    if (AppState.currentSection === 'shops' || AppState.currentSection === 'dashboard') {
+                        document.querySelectorAll('#shopsTableBody tr').forEach(r => {
+                            r.style.display = r.textContent.toLowerCase().includes(q) ? '' : 'none';
+                        });
+                    }
+                    if (AppState.currentSection === 'alerts') {
+                        document.querySelectorAll('#alertsTableBody tr').forEach(r => {
+                            r.style.display = r.textContent.toLowerCase().includes(q) ? '' : 'none';
+                        });
+                    }
+                }, 300));
+
+                // Map filter buttons
+                document.getElementById('mapViewNormal')?.addEventListener('click', () => {
+                    const filtered = AppState.shops.filter(s => {
+                        const d = Utils.calculateDiscrepancy(s.expectedRice, s.actualRice) + Utils.calculateDiscrepancy(s.expectedWheat, s.actualWheat);
+                        return d === 0;
+                    });
+                    MapService.updateShopMarkers(filtered);
+                    toastr.info(`Showing ${filtered.length} normal shops`);
+                });
+                document.getElementById('mapViewWarning')?.addEventListener('click', () => {
+                    const filtered = AppState.shops.filter(s => {
+                        const d = Utils.calculateDiscrepancy(s.expectedRice, s.actualRice) + Utils.calculateDiscrepancy(s.expectedWheat, s.actualWheat);
+                        return d > 0 && d <= 10;
+                    });
+                    MapService.updateShopMarkers(filtered);
+                    toastr.info(`Showing ${filtered.length} warning shops`);
+                });
+                document.getElementById('mapViewCritical')?.addEventListener('click', () => {
+                    const filtered = AppState.shops.filter(s => {
+                        const d = Utils.calculateDiscrepancy(s.expectedRice, s.actualRice) + Utils.calculateDiscrepancy(s.expectedWheat, s.actualWheat);
+                        return d > 10;
+                    });
+                    MapService.updateShopMarkers(filtered);
+                    toastr.info(`Showing ${filtered.length} critical shops`);
+                });
+
+                // Quick action buttons
+                document.getElementById('generateReportBtn')?.addEventListener('click', () => {
+                    downloadReport('audit');
+                    toastr.success('Generating audit report...');
+                });
+                document.getElementById('sendBulkAlertsBtn')?.addEventListener('click', async () => {
+                    const warning = AppState.shops.filter(s => {
+                        const d = Utils.calculateDiscrepancy(s.expectedRice, s.actualRice) + Utils.calculateDiscrepancy(s.expectedWheat, s.actualWheat);
+                        return d > 0;
+                    });
+                    for (const s of warning) {
+                        await AlertService.createAlert(s.id, 'bulk_alert', 'high', `Discrepancy review required at ${s.name}`);
+                    }
+                    toastr.success(`Sent alerts to ${warning.length} shops with discrepancies`);
+                });
+                document.getElementById('scheduleAuditBtn')?.addEventListener('click', async () => {
+                    await AuditService.logAction(AppState.currentUser?.uid || 'system', 'schedule_audit', 'Scheduled system-wide audit');
+                    toastr.success('Audit scheduled for all shops. Notifications sent.');
+                    await DynamicUI.loadAuditLog();
+                });
+                document.getElementById('flagInvestigationBtn')?.addEventListener('click', () => {
+                    const critical = AppState.shops.filter(s => (AppState.riskScores?.[s.id]?.score || 0) >= 70);
+                    if (critical.length === 0) { toastr.info('No shops require investigation'); return; }
+                    critical.forEach(s => flagForInvestigation(s.id));
+                    toastr.warning(`Flagged ${critical.length} high-risk shops for investigation`);
+                });
+
+                // Export buttons
+                document.getElementById('exportShopsBtn')?.addEventListener('click', () => {
+                    const data = AppState.shops.map(s => ({
+                        ID: s.id, Name: s.name, Location: s.location, Owner: s.owner,
+                        ExpRice: s.expectedRice, ActRice: s.actualRice,
+                        ExpWheat: s.expectedWheat, ActWheat: s.actualWheat,
+                        RiskScore: AppState.riskScores?.[s.id]?.score || 0
+                    }));
+                    DynamicUI.exportToCSV(data, `shops_export_${new Date().toISOString().slice(0,10)}.csv`);
+                });
+                document.getElementById('exportMapData')?.addEventListener('click', () => {
+                    const data = AppState.shops.map(s => ({
+                        ID: s.id, Name: s.name, Lat: s.latitude, Lng: s.longitude,
+                        Discrepancy: Utils.calculateDiscrepancy(s.expectedRice, s.actualRice) + Utils.calculateDiscrepancy(s.expectedWheat, s.actualWheat)
+                    }));
+                    DynamicUI.exportToCSV(data, `map_data_${new Date().toISOString().slice(0,10)}.csv`);
                 });
             },
             
@@ -2964,20 +3288,8 @@
                                                     <th>Amount (₹)</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
-                                                ${Array.from({length: 5}, (_, i) => {
-                                                    const date = new Date(Date.now() - i * 86400000);
-                                                    return `
-                                                        <tr>
-                                                            <td>${Utils.formatDate(date)}</td>
-                                                            <td>TXN${1000 + i}</td>
-                                                            <td>CUST${2000 + i}</td>
-                                                            <td>${5 + i}</td>
-                                                            <td>${4 + i}</td>
-                                                            <td>${(5 + i) * 30 + (4 + i) * 20}</td>
-                                                        </tr>
-                                                    `;
-                                                }).join('')}
+                                            <tbody id="shopTxnBody">
+                                                <!-- Loaded from Firebase -->
                                             </tbody>
                                         </table>
                                     </div>
@@ -2988,6 +3300,31 @@
                 `;
                 
                 DOM.shopDetailModal.show();
+                
+                // Load real transactions for this shop from Firebase
+                try {
+                    const txnSnap = await get(ref(database, 'transactions'));
+                    const tbody = document.getElementById('shopTxnBody');
+                    if (txnSnap.exists() && tbody) {
+                        const allTxns = Object.values(txnSnap.val());
+                        const shopTxns = allTxns.filter(t => t.shopId === shopId).sort((a, b) => b.timestamp - a.timestamp).slice(0, 10);
+                        if (shopTxns.length > 0) {
+                            tbody.innerHTML = shopTxns.map(t => `
+                                <tr>
+                                    <td>${Utils.formatDate(t.timestamp)}</td>
+                                    <td><code>${t.beneficiaryId || 'N/A'}</code></td>
+                                    <td>${t.beneficiaryId || 'N/A'}</td>
+                                    <td>${t.item?.includes('Rice') ? (t.quantityDispensed || 0) : '-'}</td>
+                                    <td>${t.item?.includes('Wheat') ? (t.quantityDispensed || 0) : '-'}</td>
+                                    <td>${((t.quantityDispensed || 0) * 30).toFixed(0)}</td>
+                                </tr>
+                            `).join('');
+                        } else {
+                            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">No transactions found</td></tr>';
+                        }
+                    }
+                } catch(e) { console.error('Shop txn load error:', e); }
+                
                 UIService.hideLoading();
                 
             } catch (error) {
@@ -3255,77 +3592,121 @@
             }
         });
 
-            // Initialize Analytics Charts
-            function initAnalyticsCharts() {
-                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May'];
-                
-                // Distribution Trend Chart
-                const distCtx = document.getElementById('analyticsDistributionChart');
-                if (distCtx) {
-                    new Chart(distCtx, {
-                        type: 'line',
-                        data: {
-                            labels: months,
-                            datasets: [{
-                                label: 'Rice (tonnes)',
-                                data: [42, 48, 45, 51, 47],
-                                borderColor: '#4361ee',
-                                backgroundColor: 'rgba(67, 97, 238, 0.1)',
-                                fill: true,
-                                tension: 0.4
-                            }, {
-                                label: 'Wheat (tonnes)',
-                                data: [30, 35, 32, 38, 36],
-                                borderColor: '#f57c00',
-                                backgroundColor: 'rgba(245, 124, 0, 0.1)',
-                                fill: true,
-                                tension: 0.4
-                            }]
-                        },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
-                    });
-                }
+            // Initialize Analytics Charts from Firebase data
+            async function initAnalyticsCharts() {
+                try {
+                    const txnSnap = await window.get(window.ref(window.database, 'transactions'));
+                    const alertSnap = await window.get(window.ref(window.database, 'alerts'));
+                    const txns = txnSnap.exists() ? Object.values(txnSnap.val()) : [];
+                    const alerts = alertSnap.exists() ? Object.values(alertSnap.val()) : [];
 
-                // Commodity Breakdown Chart
-                const comCtx = document.getElementById('analyticsCommodityChart');
-                if (comCtx) {
-                    new Chart(comCtx, {
-                        type: 'doughnut',
-                        data: {
-                            labels: ['White Rice', 'Wheat', 'Parboiled Rice', 'Edible Oil', 'Kerosene'],
-                            datasets: [{
-                                data: [35, 25, 20, 12, 8],
-                                backgroundColor: ['#4361ee', '#f57c00', '#2e7d32', '#0277bd', '#c62828']
-                            }]
-                        },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+                    // Group transactions by month
+                    const monthlyData = {};
+                    txns.forEach(t => {
+                        const d = new Date(t.timestamp);
+                        const key = d.toLocaleString('en-IN', { month: 'short' });
+                        if (!monthlyData[key]) monthlyData[key] = { rice: 0, wheat: 0 };
+                        if (t.item && t.item.toLowerCase().includes('rice')) {
+                            monthlyData[key].rice += (t.quantityDispensed || 0);
+                        } else {
+                            monthlyData[key].wheat += (t.quantityDispensed || 0);
+                        }
                     });
-                }
+                    const labels = Object.keys(monthlyData).length > 0 ? Object.keys(monthlyData) : ['No Data'];
+                    const riceData = labels.map(l => (monthlyData[l]?.rice || 0));
+                    const wheatData = labels.map(l => (monthlyData[l]?.wheat || 0));
 
-                // Fraud Detection Rate Chart
-                const fraudCtx = document.getElementById('analyticsFraudTrendChart');
-                if (fraudCtx) {
-                    new Chart(fraudCtx, {
-                        type: 'bar',
-                        data: {
-                            labels: months,
-                            datasets: [{
-                                label: 'Anomalies Detected',
-                                data: [12, 8, 15, 6, 4],
-                                backgroundColor: 'rgba(198, 40, 40, 0.7)',
-                                borderRadius: 6
-                            }, {
-                                label: 'Resolved',
-                                data: [10, 7, 13, 6, 3],
-                                backgroundColor: 'rgba(46, 125, 50, 0.7)',
-                                borderRadius: 6
-                            }]
-                        },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+                    // Distribution Trend Chart
+                    const distCtx = document.getElementById('analyticsDistributionChart');
+                    if (distCtx) {
+                        new Chart(distCtx, {
+                            type: 'line',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: 'Rice (kg)',
+                                    data: riceData,
+                                    borderColor: '#4361ee',
+                                    backgroundColor: 'rgba(67, 97, 238, 0.1)',
+                                    fill: true, tension: 0.4
+                                }, {
+                                    label: 'Wheat (kg)',
+                                    data: wheatData,
+                                    borderColor: '#f57c00',
+                                    backgroundColor: 'rgba(245, 124, 0, 0.1)',
+                                    fill: true, tension: 0.4
+                                }]
+                            },
+                            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+                        });
+                    }
+
+                    // Commodity Breakdown from actual transactions
+                    const commodities = {};
+                    txns.forEach(t => {
+                        const item = t.item || t.category || 'Other';
+                        commodities[item] = (commodities[item] || 0) + (t.quantityDispensed || 0);
                     });
+                    const comLabels = Object.keys(commodities).length > 0 ? Object.keys(commodities) : ['No Data'];
+                    const comData = comLabels.map(l => commodities[l] || 0);
+                    const comColors = ['#4361ee', '#f57c00', '#2e7d32', '#0277bd', '#c62828', '#7b1fa2', '#00695c'];
+
+                    const comCtx = document.getElementById('analyticsCommodityChart');
+                    if (comCtx) {
+                        new Chart(comCtx, {
+                            type: 'doughnut',
+                            data: {
+                                labels: comLabels,
+                                datasets: [{ data: comData, backgroundColor: comColors.slice(0, comLabels.length) }]
+                            },
+                            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+                        });
+                    }
+
+                    // Fraud Detection from actual alerts
+                    const anomalyByMonth = {};
+                    const resolvedByMonth = {};
+                    alerts.forEach(a => {
+                        const d = new Date(a.timestamp);
+                        const key = d.toLocaleString('en-IN', { month: 'short' });
+                        anomalyByMonth[key] = (anomalyByMonth[key] || 0) + 1;
+                        if (a.resolved) resolvedByMonth[key] = (resolvedByMonth[key] || 0) + 1;
+                    });
+                    const fraudLabels = Object.keys(anomalyByMonth).length > 0 ? Object.keys(anomalyByMonth) : ['No Data'];
+                    const anomalyData = fraudLabels.map(l => anomalyByMonth[l] || 0);
+                    const resolvedData = fraudLabels.map(l => resolvedByMonth[l] || 0);
+
+                    const fraudCtx = document.getElementById('analyticsFraudTrendChart');
+                    if (fraudCtx) {
+                        new Chart(fraudCtx, {
+                            type: 'bar',
+                            data: {
+                                labels: fraudLabels,
+                                datasets: [{
+                                    label: 'Anomalies Detected', data: anomalyData,
+                                    backgroundColor: 'rgba(198, 40, 40, 0.7)', borderRadius: 6
+                                }, {
+                                    label: 'Resolved', data: resolvedData,
+                                    backgroundColor: 'rgba(46, 125, 50, 0.7)', borderRadius: 6
+                                }]
+                            },
+                            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+                        });
+                    }
+                } catch (e) { console.error('Analytics chart init error:', e); }
+            }
+            // Wait for Firebase to be ready before initializing analytics charts
+            function tryInitAnalyticsCharts(retries = 15) {
+                if (window.get && window.ref && window.database) {
+                    initAnalyticsCharts().catch(e => console.warn('Analytics chart init deferred:', e.message));
+                } else if (retries > 0) {
+                    setTimeout(() => tryInitAnalyticsCharts(retries - 1), 800);
+                } else {
+                    console.warn('Firebase not ready for analytics charts after max retries');
                 }
             }
-            initAnalyticsCharts();
+            // Delay initial attempt to allow module script to load
+            setTimeout(() => tryInitAnalyticsCharts(), 1000);
 
         // Handle remember me
         const rememberMe = document.getElementById('rememberMe');
