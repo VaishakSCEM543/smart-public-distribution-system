@@ -3,2565 +3,760 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart PDS - Shop Owner Portal</title>
+    <title>Smart PDS - Shop Owner Command Center</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Firebase App (required) -->
+    <!-- Firebase App & Auth -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <!-- Firebase Auth and Database -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    
     <style>
         :root {
-            --primary: #4361ee;
-            --secondary: #3f37c9;
-            --success: #4cc9f0;
-            --light: #f8f9fa;
-            --dark: #212529;
-            --accent: #7209b7;
-            --warning: #ff9500;
-            --danger: #ff3757;
-            --queue-primary: #2E8B57;
+            --bg-base: #0a0c10;
+            --bg-surface: rgba(22, 27, 34, 0.7);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --primary: #58a6ff;
+            --primary-glow: rgba(88, 166, 255, 0.3);
+            --success: #3fb950;
+            --success-glow: rgba(63, 185, 80, 0.3);
+            --warning: #d29922;
+            --danger: #f85149;
+            --text-main: #c9d1d9;
+            --text-muted: #8b949e;
+            --sidebar-width: 260px;
         }
-        
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0f111a 0%, #1a1d2d 100%);
-            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-base);
+            background-image: radial-gradient(circle at 50% 0%, rgba(28, 33, 40, 1) 0%, rgba(10, 12, 16, 1) 100%);
+            color: var(--text-main);
             margin: 0;
-            padding: 0;
-            color: #e2e8f0;
-            font-size: 0.9rem;
+            overflow-x: hidden;
+            min-height: 100vh;
         }
-        
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+        /* Login Screen */
         .login-container {
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(rgba(10, 14, 39, 0.7), rgba(10, 14, 39, 0.8)), url('https://images.unsplash.com/photo-1578916171728-46686eac8d58?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center;
+            background: linear-gradient(rgba(10, 12, 16, 0.8), rgba(10, 12, 16, 0.9)), url('https://images.unsplash.com/photo-1578916171728-46686eac8d58?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center;
             background-size: cover;
-            position: relative;
-        }
-        
-        .login-container::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
-            pointer-events: none;
+            position: fixed;
+            width: 100%;
+            z-index: 9999;
         }
 
         .login-card {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 20px;
-            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.3);
+            background: rgba(22, 27, 34, 0.6);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--border-subtle);
+            border-radius: 24px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.1);
             width: 100%;
             max-width: 420px;
-            overflow: hidden;
-            position: relative;
-            z-index: 1;
-            color: white;
-        }
-        
-        .login-header {
-            background: rgba(67, 97, 238, 0.2);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 30px 20px 20px;
-            text-align: center;
-        }
-        
-        .login-body {
-            padding: 30px;
-        }
-        
-        .login-body .form-label {
-            color: rgba(255, 255, 255, 0.9);
-            font-weight: 500;
-            font-size: 0.85rem;
-            letter-spacing: 0.5px;
+            padding: 40px;
         }
 
-        .login-body .form-control {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .login-card .form-control {
+            background: rgba(0,0,0,0.2);
+            border: 1px solid var(--border-subtle);
             color: white;
-            padding: 12px 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            transition: all 0.3s ease;
+            padding: 12px 16px;
+            border-radius: 12px;
         }
         
-        .login-body .form-control::placeholder {
-            color: rgba(255, 255, 255, 0.4);
+        .login-card .form-control:focus {
+            background: rgba(0,0,0,0.4);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
         }
 
-        .login-body .form-control:focus {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(67, 97, 238, 0.5);
-            box-shadow: 0 0 15px rgba(67, 97, 238, 0.2);
-            color: white;
-        }
-        
-        .login-body .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
+        .btn-glass {
+            background: linear-gradient(180deg, rgba(88, 166, 255, 0.15) 0%, rgba(88, 166, 255, 0.05) 100%);
+            border: 1px solid rgba(88, 166, 255, 0.4);
+            color: var(--primary);
             font-weight: 600;
-            font-size: 1rem;
-            letter-spacing: 1px;
+            border-radius: 12px;
+            padding: 12px 24px;
             transition: all 0.3s ease;
-            text-transform: uppercase;
         }
-        
-        .login-body .btn-primary:hover {
+
+        .btn-glass:hover {
+            background: rgba(88, 166, 255, 0.2);
+            box-shadow: 0 0 20px var(--primary-glow);
+            color: white;
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
         }
-        
-        .dashboard-container {
+
+        /* App Layout */
+        .app-layout {
             display: none;
-            padding: 20px 15px;
             min-height: 100vh;
         }
-        
-        .navbar {
-            background: rgba(15, 17, 26, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            padding: 15px 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            margin-bottom: 25px;
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: rgba(10, 12, 16, 0.95);
+            border-right: 1px solid var(--border-subtle);
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+        }
+
+        .sidebar-brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 12px;
+        }
+
+        .sidebar-brand i {
+            color: var(--primary);
+            text-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-item {
+            margin-bottom: 8px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+        }
+
+        .nav-link.active {
+            background: rgba(88, 166, 255, 0.1);
+            color: var(--primary);
+            border: 1px solid rgba(88, 166, 255, 0.2);
+        }
+
+        .nav-link.active i {
+            color: var(--primary);
+            text-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 30px 40px;
+            width: calc(100% - var(--sidebar-width));
+        }
+
+        .topbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: sticky;
-            top: 15px;
-            z-index: 100;
+            margin-bottom: 40px;
         }
-        
-        .card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-            margin-bottom: 20px;
-            color: #e2e8f0;
+
+        .view-section {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
         }
-        
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-            border-color: rgba(67, 97, 238, 0.3);
+
+        .view-section.active {
+            display: block;
         }
-        
-        .card-header {
-            background: transparent;
-            color: white;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 16px 16px 0 0 !important;
-            padding: 18px 20px;
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Glass Cards */
+        .glass-card {
+            background: var(--bg-surface);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            height: 100%;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(255,255,255,0.15);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            transform: translateY(-2px);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
             font-weight: 600;
-            font-size: 1.05rem;
-            letter-spacing: 0.5px;
-        }
-        
-        .stat-card {
-            text-align: center;
-            padding: 15px 10px;
-            min-height: 120px;
+            color: white;
+            margin-bottom: 20px;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
+            align-items: center;
+            gap: 10px;
         }
-        
-        .stat-number {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 5px;
+
+        /* Metrics */
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: white;
+            line-height: 1.2;
         }
-        
-        .stat-label {
-            color: var(--dark);
-            font-size: 0.85rem;
+
+        .metric-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
             font-weight: 500;
+        }
+
+        .trend-up { color: var(--success); }
+        .trend-down { color: var(--danger); }
+
+        /* Queue Neon Counter */
+        .neon-counter-container {
+            background: #000;
+            border: 2px solid #000;
+            border-radius: 24px;
+            padding: 40px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .neon-counter-container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(63, 185, 80, 0.5), transparent);
+        }
+
+        .neon-number {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 6rem;
+            font-weight: 900;
+            color: #0f0;
+            text-shadow: 0 0 10px #0f0, 0 0 20px #0f0, 0 0 40px #0f0;
+            letter-spacing: 4px;
+            margin: 0;
+            line-height: 1;
+        }
+
+        .neon-label {
+            color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 0.85rem;
+            margin-top: 15px;
+        }
+
+        /* Data Grids */
+        .data-grid {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+        }
+
+        .data-grid th {
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0 16px 12px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .data-grid td {
+            background: rgba(255,255,255,0.02);
+            padding: 16px;
+            color: var(--text-main);
+        }
+
+        .data-grid tr td:first-child { border-radius: 12px 0 0 12px; }
+        .data-grid tr td:last-child { border-radius: 0 12px 12px 0; }
+
+        .data-grid tr:hover td {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .bg-glow-success { background: rgba(63, 185, 80, 0.15); color: var(--success); border: 1px solid rgba(63, 185, 80, 0.3); }
+        .bg-glow-warning { background: rgba(210, 153, 34, 0.15); color: var(--warning); border: 1px solid rgba(210, 153, 34, 0.3); }
+        .bg-glow-danger { background: rgba(248, 81, 73, 0.15); color: var(--danger); border: 1px solid rgba(248, 81, 73, 0.3); }
+
+        /* Live Feed */
+        .live-feed {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .feed-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-subtle);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .feed-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(88, 166, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
         }
         
         .chart-container {
             position: relative;
-            height: 200px;
+            height: 300px;
             width: 100%;
         }
-        
-        .dropdown-menu {
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            background: #1a1d2d;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 8px;
-            font-size: 0.9rem;
-            z-index: 1050 !important;
-        }
-        
-        .dropdown-item {
-            border-radius: 8px;
-            padding: 10px 15px;
-            transition: all 0.2s;
-            margin: 2px 0;
-            cursor: pointer;
-            font-size: 0.9rem;
-            color: #e2e8f0;
-        }
-        
-        .dropdown-item:hover {
-            background-color: rgba(67, 97, 238, 0.2);
-            color: white;
-        }
-        
-        .logout-btn {
-            background: rgba(255, 55, 87, 0.1);
-            color: var(--danger);
-            border: 1px solid rgba(255, 55, 87, 0.3);
-            border-radius: 8px;
-            padding: 8px 16px;
-            font-size: 0.85rem;
-            transition: all 0.3s ease;
-            font-weight: 600;
-        }
 
-        .logout-btn:hover {
-            background: var(--danger);
-            color: white;
-            box-shadow: 0 4px 15px rgba(255, 55, 87, 0.4);
-        }
-        
-        .subcategory-page {
-            display: none;
-        }
-        
-        .back-btn {
-            background: rgba(67, 97, 238, 0.1);
-            color: var(--primary);
-            border: 1px solid rgba(67, 97, 238, 0.3);
-            border-radius: 8px;
-            padding: 8px 16px;
-            font-size: 0.85rem;
-            margin-bottom: 15px;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .back-btn:hover {
-            background: var(--primary);
-            color: white;
-        }
-        
-        .detail-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .detail-header {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--success);
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 8px;
-        }
-        
-        .loading-spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid var(--primary);
-            border-radius: 50%;
-            width: 25px;
-            height: 25px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .month-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        
-        .month-btn {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 10px 5px;
-            text-align: center;
-            font-weight: 600;
-            font-size: 0.8rem;
-            cursor: pointer;
-        }
-        
-        .schedule-day {
-            background: white;
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 10px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-        
-        .day-header {
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--primary);
-            font-size: 0.9rem;
-        }
-        
-        .status-open {
-            color: green;
-            font-weight: 600;
-        }
-        
-        .status-closed {
-            color: red;
-            font-weight: 600;
-        }
-        
-        .time-input {
-            display: none;
-            margin-top: 8px;
-            font-size: 0.85rem;
-        }
-        
-        .apply-btn {
-            background: var(--accent);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 8px 15px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            margin-top: 15px;
-        }
-        
-        .time-select {
-            padding: 5px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-            font-size: 0.8rem;
-            width: 70px;
-        }
-        
-        .form-select {
-            font-size: 0.85rem;
-            padding: 6px 10px;
-        }
-        
-        .table th, .table td {
-            padding: 8px 10px;
-            font-size: 0.85rem;
-        }
-        
-        .badge {
-            font-size: 0.75rem;
-            padding: 4px 8px;
-        }
-        
-        .notification-icon {
-            font-size: 1.1rem;
-            margin-right: 10px;
-        }
-        
-        .notification-badge {
-            font-size: 0.65rem;
-            width: 18px;
-            height: 18px;
-        }
-        
-        .time-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-bottom: 8px;
-        }
-        
-        .time-label {
-            font-size: 0.85rem;
-            min-width: 40px;
-        }
-        
-        .category-dropdown {
-            position: relative;
-            z-index: 1000;
-        }
-        
-        .real-time-badge {
-            background-color: var(--success);
-            color: white;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 0.7rem;
-            margin-left: 5px;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.6; }
-            100% { opacity: 1; }
-        }
-        
-        .nav-tabs {
-            border-bottom: none;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            padding: 6px;
-            display: inline-flex;
-            margin-bottom: 25px;
-        }
-
-        .nav-tabs .nav-link {
-            border: none;
-            border-radius: 8px;
-            color: #94a3b8;
-            font-weight: 600;
-            padding: 12px 20px;
-            margin-right: 5px;
-            transition: all 0.3s ease;
-        }
-        
-        .nav-tabs .nav-link:hover {
-            color: white;
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .nav-tabs .nav-link.active {
-            background: rgba(67, 97, 238, 0.2);
-            color: #4cc9f0;
-            border: 1px solid rgba(67, 97, 238, 0.3);
-            box-shadow: inset 0 0 15px rgba(67, 97, 238, 0.1);
-        }
-        
-        .stock-bar {
-            height: 8px;
-            border-radius: 4px;
-            background: rgba(255,255,255,0.1);
-            margin-top: 5px;
-            overflow: hidden;
-        }
-        
-        .stock-progress {
-            height: 100%;
-            border-radius: 4px;
-            background: var(--primary);
-        }
-        
-        .stock-low { background: var(--danger); box-shadow: 0 0 10px var(--danger); }
-        .stock-medium { background: var(--warning); box-shadow: 0 0 10px var(--warning); }
-        .stock-high { background: var(--success); box-shadow: 0 0 10px var(--success); }
-        
-        /* NEW QUEUE MANAGEMENT STYLES */
-        .queue-management-card {
-            border: 1px solid rgba(76, 201, 240, 0.3);
-            background: linear-gradient(135deg, rgba(15, 17, 26, 0.8), rgba(10, 14, 39, 0.9));
-        }
-        
-        .current-token {
-            background: #000;
-            color: #0f0;
-            font-family: 'Courier New', Courier, monospace;
-            font-weight: 900;
-            font-size: 4.5rem;
-            letter-spacing: 5px;
-            padding: 30px;
-            border-radius: 15px;
-            border: 2px solid #0f0;
-            text-align: center;
-            text-shadow: 0 0 20px #0f0, 0 0 40px #0f0;
-            box-shadow: inset 0 0 30px rgba(0, 255, 0, 0.2), 0 0 20px rgba(0, 255, 0, 0.2);
-            margin-bottom: 25px;
-        }
-        
-        .token-item {
-            border-left: 4px solid rgba(255,255,255,0.1);
-            margin: 10px 0;
-            padding: 15px;
-            background: rgba(255,255,255,0.02);
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.05);
-            transition: all 0.3s ease;
-            color: white;
-        }
-        
-        .token-item:hover {
-            transform: translateX(5px);
-            background: rgba(255,255,255,0.05);
-            border-left-color: var(--primary);
-        }
-        
-        .token-item.next {
-            border-left-color: #ff9800;
-            background: rgba(255, 152, 0, 0.1);
-            border: 1px solid rgba(255, 152, 0, 0.3);
-        }
-        
-        .token-item.completed {
-            border-left-color: #4caf50;
-            background: rgba(76, 175, 80, 0.05);
-            opacity: 0.5;
-        }
-        
-        .priority-badge {
-            background: var(--danger);
-            color: white;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 0.7rem;
-        }
-        
-        .queue-stats {
-            background: #e3f2fd;
-            border-radius: 10px;
-            padding: 15px;
-            margin: 10px 0;
-        }
-        
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        
-        @media (max-width: 768px) {
-            .action-buttons {
-                flex-direction: column;
-            }
-        }
     </style>
 </head>
 <body>
+
     <!-- Login Section -->
     <div class="login-container" id="loginSection">
-        <div class="login-card">
-            <div class="login-header">
-                <div style="width: 60px; height: 60px; background: rgba(255,255,255,0.1); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 1.8rem;">
-                    <i class="fas fa-store-alt text-white"></i>
-                </div>
-                <h2 style="font-size: 1.6rem; font-weight: 700; margin-bottom: 5px;">Smart PDS</h2>
-                <p class="mb-0" style="font-size: 0.85rem; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 1.5px;">Shop Owner Portal</p>
+        <div class="login-card text-center">
+            <div style="width: 80px; height: 80px; background: rgba(88, 166, 255, 0.1); border-radius: 24px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 2.5rem; color: var(--primary); border: 1px solid rgba(88, 166, 255, 0.3);">
+                <i class="fas fa-store-alt"></i>
             </div>
-            <div class="login-body">
-                <div class="mb-3 position-relative">
-                    <label for="email" class="form-label">Shop License / Email</label>
-                    <div class="input-group">
-                        <span class="input-group-text" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-right: none; color: rgba(255,255,255,0.5);"><i class="fas fa-id-badge"></i></span>
-                        <input type="email" class="form-control m-0 border-start-0" id="email" placeholder="owner@shop.com">
-                    </div>
-                </div>
-                <div class="mb-4 position-relative">
-                    <label for="password" class="form-label">Security Key</label>
-                    <div class="input-group">
-                        <span class="input-group-text" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-right: none; color: rgba(255,255,255,0.5);"><i class="fas fa-key"></i></span>
-                        <input type="password" class="form-control m-0 border-start-0" id="password" placeholder="Enter security key">
-                    </div>
-                </div>
-                <div class="d-flex justify-content-between align-items-center mb-4" style="font-size: 0.85rem;">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="rememberMe" style="background-color: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2);">
-                        <label class="form-check-label text-white-50" for="rememberMe">Remember shop</label>
-                    </div>
-                    <a href="#" class="text-white-50 text-decoration-none">Recover Access</a>
-                </div>
-                <div class="loading" id="loginLoading">
-                    <div class="loading-spinner"></div>
-                    <p class="mt-2 text-white-50" style="font-size: 0.9rem;">Verifying License...</p>
-                </div>
-                <button class="btn btn-primary w-100" id="loginBtn">
-                    <i class="fas fa-lock-open me-2"></i>Open Terminal
-                </button>
-                <div class="text-center mt-3">
-                    <button class="btn btn-sm text-white-50 text-decoration-underline" style="font-size: 0.8rem;" onclick="document.getElementById('email').value='owner@shop.com';document.getElementById('password').value='demo123';document.getElementById('loginBtn').click();">
-                        <i class="fas fa-bolt me-1"></i> Quick Demo Access
-                    </button>
-                </div>
+            <h2 style="font-weight: 800; color: white; margin-bottom: 5px;">Smart PDS</h2>
+            <p style="color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; margin-bottom: 30px;">Terminal Access</p>
+            
+            <div class="mb-3 text-start">
+                <input type="email" class="form-control" id="email" placeholder="Terminal ID">
             </div>
-        </div>
-    </div>
-
-    <!-- Dashboard Section -->
-    <div class="dashboard-container" id="dashboardSection">
-        <div class="navbar">
-            <h3 class="mb-0" style="font-size: 1.2rem;"><i class="fas fa-store me-2"></i>Smart PDS Dashboard</h3>
-            <div class="d-flex align-items-center">
-                <div class="notification-icon position-relative">
-                    <i class="fas fa-bell"></i>
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge">3</span>
-                </div>
-                <button class="logout-btn ms-2" id="logoutBtn">
-                    <i class="fas fa-sign-out-alt me-1"></i>Logout
-                </button>
-            </div>
-        </div>
-
-        <ul class="nav nav-tabs mb-3" id="dashboardTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">Overview</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="queue-tab" data-bs-toggle="tab" data-bs-target="#queue" type="button" role="tab">
-                    <i class="fas fa-users me-2"></i>Queue Management
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="stock-tab" data-bs-toggle="tab" data-bs-target="#stock" type="button" role="tab">Stock Management</button>
-            </li>
-        </ul>
-
-        <div class="tab-content" id="dashboardTabContent">
-            <!-- Overview Tab -->
-            <div class="tab-pane fade show active" id="overview" role="tabpanel">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-header border-bottom border-secondary border-opacity-25">Categories</div>
-                            <div class="card-body">
-                                <div class="dropdown category-dropdown">
-                                    <button class="btn btn-primary dropdown-toggle w-100" type="button" id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Select Category
-                                    </button>
-                                    <ul class="dropdown-menu w-100" aria-labelledby="categoryDropdown">
-                                        <li><a class="dropdown-item category-option" href="#" data-category="grains">Grains</a></li>
-                                        <li><a class="dropdown-item category-option" href="#" data-category="liquid">Liquid</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="card">
-                            <div class="card-header">Recent Transactions <span class="real-time-badge">LIVE</span></div>
-                            <div class="card-body">
-                                <div id="recentTransactions">
-                                    <p class="text-center">No recent transactions</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card">
-                            <div class="card-header">Shop Schedule</div>
-                            <div class="card-body">
-                                <button class="btn btn-primary w-100" id="scheduleBtn">
-                                    <i class="fas fa-calendar-alt me-2"></i>Manage Schedule
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-header">Stock Information</div>
-                            <div class="card-body">
-                                <ul class="list-group list-group-flush bg-transparent" id="stockList">
-                                    <li class="list-group-item bg-transparent text-light d-flex justify-content-between align-items-center py-3 border-bottom border-secondary border-opacity-25">
-                                        White Rice
-                                        <span class="badge bg-primary bg-opacity-25 text-primary rounded-pill px-3 py-2">5 kg</span>
-                                    </li>
-                                    <li class="list-group-item bg-transparent text-light d-flex justify-content-between align-items-center py-3 border-bottom border-secondary border-opacity-25">
-                                        Parboiled Rice
-                                        <span class="badge bg-primary bg-opacity-25 text-primary rounded-pill px-3 py-2">5 kg</span>
-                                    </li>
-                                    <li class="list-group-item bg-transparent text-light d-flex justify-content-between align-items-center py-3 border-bottom border-secondary border-opacity-25">
-                                        Wheat
-                                        <span class="badge bg-primary bg-opacity-25 text-primary rounded-pill px-3 py-2">5 kg</span>
-                                    </li>
-                                    <li class="list-group-item bg-transparent text-light d-flex justify-content-between align-items-center py-3 border-bottom border-secondary border-opacity-25">
-                                        Edible Oil
-                                        <span class="badge bg-primary bg-opacity-25 text-primary rounded-pill px-3 py-2">5 L</span>
-                                    </li>
-                                    <li class="list-group-item bg-transparent text-light d-flex justify-content-between align-items-center py-3">
-                                        Kerosene
-                                        <span class="badge bg-primary bg-opacity-25 text-primary rounded-pill px-3 py-2">5 L</span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-header">Stock Visualization</div>
-                            <div class="card-body">
-                                <div class="chart-container">
-                                    <canvas id="stockChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="row mt-3">
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header">Transactions Today</div>
-                            <div class="card-body">
-                                <div class="chart-container">
-                                    <canvas id="transactionsChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header">Daily Sales</div>
-                            <div class="card-body">
-                                <div class="chart-container">
-                                    <canvas id="salesChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- NEW QUEUE MANAGEMENT TAB -->
-            <div class="tab-pane fade" id="queue" role="tabpanel">
-                <div class="row">
-                    <!-- Current Token Display -->
-                    <div class="col-md-12 mb-4">
-                        <div class="card queue-management-card">
-                            <div class="card-header bg-success text-white">
-                                <h5 class="mb-0"><i class="fas fa-user-check me-2"></i>Currently Serving</h5>
-                            </div>
-                            <div class="card-body text-center">
-                                <div class="current-token" id="currentServingToken">
-                                    No active token
-                                </div>
-                                <div class="action-buttons justify-content-center">
-                                    <button class="btn btn-success" id="nextTokenBtn">
-                                        <i class="fas fa-forward me-2"></i>Next Token
-                                    </button>
-                                    <button class="btn btn-warning" id="skipTokenBtn">
-                                        <i class="fas fa-step-forward me-2"></i>Skip Token
-                                    </button>
-                                    <button class="btn btn-danger" id="completeTokenBtn">
-                                        <i class="fas fa-check me-2"></i>Complete Service
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Queue Statistics -->
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Queue Statistics</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="queue-stats">
-                                    <div class="row text-center">
-                                        <div class="col-4">
-                                            <div class="fs-3 fw-bold text-primary" id="totalTokens">0</div>
-                                            <small>Total Tokens</small>
-                                        </div>
-                                        <div class="col-4">
-                                            <div class="fs-3 fw-bold text-warning" id="waitingTokens">0</div>
-                                            <small>Waiting</small>
-                                        </div>
-                                        <div class="col-4">
-                                            <div class="fs-3 fw-bold text-success" id="servedTokens">0</div>
-                                            <small>Served Today</small>
-                                        </div>
-                                    </div>
-                                    <div class="mt-3">
-                                        <div class="d-flex justify-content-between">
-                                            <span>Average Wait Time:</span>
-                                            <strong id="avgWaitTime">0 min</strong>
-                                        </div>
-                                        <div class="d-flex justify-content-between">
-                                            <span>Estimated Completion:</span>
-                                            <strong id="estCompletion">-</strong>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Priority Queue -->
-                        <div class="card mt-4">
-                            <div class="card-header bg-warning text-dark">
-                                <h5 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Priority Queue</h5>
-                            </div>
-                            <div class="card-body">
-                                <div id="priorityQueue">
-                                    <p class="text-muted text-center">No priority tokens</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Token Queue List -->
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="mb-0"><i class="fas fa-list-ol me-2"></i>Token Queue</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="mb-3">
-                                    <input type="text" class="form-control" id="searchToken" placeholder="Search token number...">
-                                </div>
-                                <div id="tokenQueueList" style="max-height: 500px; overflow-y: auto;">
-                                    <!-- Token list will be loaded here -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Stock Management Tab -->
-            <div class="tab-pane fade" id="stock" role="tabpanel">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header">Current Stock Levels</div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>Item</th>
-                                                <th>Initial Qty</th>
-                                                <th>Current Qty</th>
-                                                <th>Used</th>
-                                                <th>Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="stockTableBody">
-                                            <tr>
-                                                <td>White Rice</td>
-                                                <td>5 kg</td>
-                                                <td id="whiteRiceCurrent">5 kg</td>
-                                                <td id="whiteRiceUsed">0 kg</td>
-                                                <td><span class="status-open">In Stock</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Parboiled Rice</td>
-                                                <td>5 kg</td>
-                                                <td id="parboiledRiceCurrent">5 kg</td>
-                                                <td id="parboiledRiceUsed">0 kg</td>
-                                                <td><span class="status-open">In Stock</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Wheat</td>
-                                                <td>5 kg</td>
-                                                <td id="wheatCurrent">5 kg</td>
-                                                <td id="wheatUsed">0 kg</td>
-                                                <td><span class="status-open">In Stock</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Edible Oil</td>
-                                                <td>5 L</td>
-                                                <td id="edibleOilCurrent">5 L</td>
-                                                <td id="edibleOilUsed">0 L</td>
-                                                <td><span class="status-open">In Stock</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Kerosene</td>
-                                                <td>5 L</td>
-                                                <td id="keroseneCurrent">5 L</td>
-                                                <td id="keroseneUsed">0 L</td>
-                                                <td><span class="status-open">In Stock</span></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header">Stock Visualization</div>
-                            <div class="card-body">
-                                <div class="chart-container">
-                                    <canvas id="stockManagementChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="card">
-                            <div class="card-header">Stock Status</div>
-                            <div class="card-body">
-                                <div id="stockStatus">
-                                    <div class="mb-3">
-                                        <div class="d-flex justify-content-between">
-                                            <span>White Rice</span>
-                                            <span id="whiteRicePercent">100%</span>
-                                        </div>
-                                        <div class="stock-bar">
-                                            <div class="stock-progress stock-high" id="whiteRiceBar" style="width: 100%"></div>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <div class="d-flex justify-content-between">
-                                            <span>Parboiled Rice</span>
-                                            <span id="parboiledRicePercent">100%</span>
-                                        </div>
-                                        <div class="stock-bar">
-                                            <div class="stock-progress stock-high" id="parboiledRiceBar" style="width: 100%"></div>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <div class="d-flex justify-content-between">
-                                            <span>Wheat</span>
-                                            <span id="wheatPercent">100%</span>
-                                        </div>
-                                        <div class="stock-bar">
-                                            <div class="stock-progress stock-high" id="wheatBar" style="width: 100%"></div>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <div class="d-flex justify-content-between">
-                                            <span>Edible Oil</span>
-                                            <span id="edibleOilPercent">100%</span>
-                                        </div>
-                                        <div class="stock-bar">
-                                            <div class="stock-progress stock-high" id="edibleOilBar" style="width: 100%"></div>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <div class="d-flex justify-content-between">
-                                            <span>Kerosene</span>
-                                            <span id="kerosenePercent">100%</span>
-                                        </div>
-                                        <div class="stock-bar">
-                                            <div class="stock-progress stock-high" id="keroseneBar" style="width: 100%"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Subcategory Pages -->
-    <div class="dashboard-container subcategory-page" id="grainsPage">
-        <div class="navbar">
-            <h3 class="mb-0" style="font-size: 1.2rem;"><i class="fas fa-store me-2"></i>Grains Details</h3>
-            <div class="d-flex align-items-center">
-                <button class="back-btn me-2" data-category="back">
-                    <i class="fas fa-arrow-left me-1"></i>Back
-                </button>
-                <div class="notification-icon position-relative">
-                    <i class="fas fa-bell"></i>
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge">3</span>
-                </div>
-                <button class="logout-btn ms-2" id="logoutBtnGrains">
-                    <i class="fas fa-sign-out-alt me-1"></i>Logout
-                </button>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-8">
-                <div class="detail-card">
-                    <div class="detail-header">Grains Stock Details</div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="stat-card">
-                                <div class="stat-number" id="grainsTotalStock">15 kg</div>
-                                <div class="stat-label">Total Stock</div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="stat-card">
-                                <div class="stat-number" id="grainsSoldToday">0 kg</div>
-                                <div class="stat-label">Sold Today</div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="stat-card">
-                                <div class="stat-number" id="grainsRemaining">15 kg</div>
-                                <div class="stat-label">Remaining Stock</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="detail-card">
-                    <div class="detail-header">Grains Available</div>
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Type</th>
-                                    <th>Initial Qty</th>
-                                    <th>Current Qty</th>
-                                    <th>Used</th>
-                                    <th>Price (per kg)</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>White Rice</td>
-                                    <td>5 kg</td>
-                                    <td id="whiteRiceStock">5 kg</td>
-                                    <td id="whiteRiceUsedDetail">0 kg</td>
-                                    <td>₹ 45</td>
-                                    <td><span class="status-open">In Stock</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Parboiled Rice</td>
-                                    <td>5 kg</td>
-                                    <td id="parboiledRiceStock">5 kg</td>
-                                    <td id="parboiledRiceUsedDetail">0 kg</td>
-                                    <td>₹ 50</td>
-                                    <td><span class="status-open">In Stock</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Wheat</td>
-                                    <td>5 kg</td>
-                                    <td id="wheatStock">5 kg</td>
-                                    <td id="wheatUsedDetail">0 kg</td>
-                                    <td>₹ 30</td>
-                                    <td><span class="status-open">In Stock</span></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+            <div class="mb-4 text-start">
+                <input type="password" class="form-control" id="password" placeholder="Security Key">
             </div>
             
-            <div class="col-md-4">
-                <div class="detail-card">
-                    <div class="detail-header">Grains Stock Chart</div>
-                    <div class="chart-container">
-                        <canvas id="grainsDetailChart"></canvas>
-                    </div>
-                </div>
-                
-                <div class="detail-card">
-                    <div class="detail-header">Stock Alerts</div>
-                    <div id="grainsAlerts">
-                        <div class="alert alert-info py-2">
-                            <i class="fas fa-info-circle me-2"></i>
-                            <strong>All items in stock</strong>
-                            <p class="mb-0 mt-1" style="font-size: 0.85rem;">Current stock levels are good.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <button class="btn-glass w-100 mb-3" id="loginBtn" onclick="doLogin()">
+                <i class="fas fa-fingerprint me-2"></i> Initialize Session
+            </button>
+            <p class="text-muted small" style="cursor:pointer;" onclick="demoLogin()">Auto-fill Demo Credentials</p>
         </div>
     </div>
 
-    <div class="dashboard-container subcategory-page" id="liquidPage">
-        <div class="navbar">
-            <h3 class="mb-0" style="font-size: 1.2rem;"><i class="fas fa-store me-2"></i>Liquid Details</h3>
-            <div class="d-flex align-items-center">
-                <button class="back-btn me-2" data-category="back">
-                    <i class="fas fa-arrow-left me-1"></i>Back
-                </button>
-                <div class="notification-icon position-relative">
-                    <i class="fas fa-bell"></i>
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge">3</span>
-                </div>
-                <button class="logout-btn ms-2" id="logoutBtnLiquid">
-                    <i class="fas fa-sign-out-alt me-1"></i>Logout
-                </button>
+    <!-- Main App -->
+    <div class="app-layout" id="appSection">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <i class="fas fa-shield-alt"></i> Smart PDS
             </div>
-        </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a class="nav-link active" onclick="switchView('dashboard', this)">
+                        <i class="fas fa-chart-line"></i> Command Center
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="switchView('queue', this)">
+                        <i class="fas fa-users"></i> Queue Management
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="switchView('inventory', this)">
+                        <i class="fas fa-box-open"></i> Live Inventory
+                    </a>
+                </li>
+            </ul>
+            <div class="mt-auto">
+                <a class="nav-link text-danger" onclick="logout()">
+                    <i class="fas fa-power-off"></i> Terminate Session
+                </a>
+            </div>
+        </aside>
 
-        <div class="row">
-            <div class="col-md-8">
-                <div class="detail-card">
-                    <div class="detail-header">Liquid Stock Details</div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="stat-card">
-                                <div class="stat-number" id="liquidTotalStock">10 L</div>
-                                <div class="stat-label">Total Stock</div>
-                            </div>
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="topbar">
+                <div>
+                    <h2 class="mb-1 text-white fw-bold" id="pageTitle">Command Center</h2>
+                    <p class="text-muted mb-0">Terminal ID: SHP-8921 • <span class="text-success"><i class="fas fa-circle" style="font-size: 8px;"></i> System Online</span></p>
+                </div>
+                <div class="d-flex gap-3 align-items-center">
+                    <div style="background: rgba(255,255,255,0.05); padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border-subtle);">
+                        <i class="fas fa-clock text-primary me-2"></i> <span id="clock">00:00:00</span>
+                    </div>
+                    <div style="width: 45px; height: 45px; border-radius: 12px; background: rgba(88, 166, 255, 0.2); border: 1px solid var(--primary); display: flex; align-items: center; justify-content: center; color: white;">
+                        JD
+                    </div>
+                </div>
+            </header>
+
+            <!-- VIEW: DASHBOARD -->
+            <div id="view-dashboard" class="view-section active">
+                <!-- Top Metrics -->
+                <div class="row g-4 mb-4">
+                    <div class="col-md-3">
+                        <div class="glass-card">
+                            <div class="metric-label mb-2"><i class="fas fa-users text-primary me-2"></i>Citizens Served</div>
+                            <div class="metric-value" id="dashServed">142</div>
+                            <div class="mt-2 text-sm"><span class="trend-up"><i class="fas fa-arrow-up"></i> 12%</span> vs yesterday</div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="stat-card">
-                                <div class="stat-number" id="liquidSoldToday">0 L</div>
-                                <div class="stat-label">Sold Today</div>
-                            </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="glass-card">
+                            <div class="metric-label mb-2"><i class="fas fa-weight-hanging text-success me-2"></i>Grains Dispersed</div>
+                            <div class="metric-value">485<span style="font-size:1rem;color:var(--text-muted)">kg</span></div>
+                            <div class="mt-2 text-sm"><span class="trend-up"><i class="fas fa-arrow-up"></i> 5%</span> vs yesterday</div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="stat-card">
-                                <div class="stat-number" id="liquidRemaining">10 L</div>
-                                <div class="stat-label">Remaining Stock</div>
-                            </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="glass-card">
+                            <div class="metric-label mb-2"><i class="fas fa-hourglass-half text-warning me-2"></i>Avg Wait Time</div>
+                            <div class="metric-value">4.2<span style="font-size:1rem;color:var(--text-muted)">min</span></div>
+                            <div class="mt-2 text-sm"><span class="trend-down"><i class="fas fa-arrow-down"></i> 1.5m</span> improved</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="glass-card">
+                            <div class="metric-label mb-2"><i class="fas fa-exclamation-triangle text-danger me-2"></i>Alerts</div>
+                            <div class="metric-value text-danger">1</div>
+                            <div class="mt-2 text-sm text-muted">Kerosene stock low</div>
                         </div>
                     </div>
                 </div>
-                
-                <div class="detail-card">
-                    <div class="detail-header">Liquids Available</div>
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Type</th>
-                                    <th>Initial Qty</th>
-                                    <th>Current Qty</th>
-                                    <th>Used</th>
-                                    <th>Price (per L)</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Edible Oil</td>
-                                    <td>5 L</td>
-                                    <td id="edibleOilStock">5 L</td>
-                                    <td id="edibleOilUsedDetail">0 L</td>
-                                    <td>₹ 120</td>
-                                    <td><span class="status-open">In Stock</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Kerosene</td>
-                                    <td>5 L</td>
-                                    <td id="keroseneStock">5 L</td>
-                                    <td id="keroseneUsedDetail">0 L</td>
-                                    <td>₹ 50</td>
-                                    <td><span class="status-open">In Stock</span></td>
-                                </tr>
-                            </tbody>
-                        </table>
+
+                <div class="row g-4">
+                    <!-- Main Chart -->
+                    <div class="col-md-8">
+                        <div class="glass-card">
+                            <h3 class="card-title">Dispensation Flow (Today)</h3>
+                            <div class="chart-container">
+                                <canvas id="flowChart"></canvas>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            
-            <div class="col-md-4">
-                <div class="detail-card">
-                    <div class="detail-header">Liquid Stock Chart</div>
-                    <div class="chart-container">
-                        <canvas id="liquidDetailChart"></canvas>
-                    </div>
-                </div>
-                
-                <div class="detail-card">
-                    <div class="detail-header">Stock Alerts</div>
-                    <div id="liquidAlerts">
-                        <div class="alert alert-info py-2">
-                            <i class="fas fa-info-circle me-2"></i>
-                            <strong>All items in stock</strong>
-                            <p class="mb-0 mt-1" style="font-size: 0.85rem;">Current stock levels are good.</p>
+                    <!-- Live Feed -->
+                    <div class="col-md-4">
+                        <div class="glass-card">
+                            <h3 class="card-title"><span class="spinner-grow spinner-grow-sm text-success me-2"></span> Live Activity</h3>
+                            <div class="live-feed" id="liveFeed">
+                                <!-- JS populated -->
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+
+            <!-- VIEW: QUEUE -->
+            <div id="view-queue" class="view-section">
+                <div class="row g-4">
+                    <div class="col-md-5">
+                        <div class="glass-card text-center" style="display:flex; flex-direction:column; justify-content:center;">
+                            <h3 class="card-title justify-content-center mb-4">ACTIVE DISPENSATION</h3>
+                            
+                            <div class="neon-counter-container mb-4">
+                                <h1 class="neon-number" id="queueTokenDisplay">T-143</h1>
+                                <div class="neon-label">Currently Serving</div>
+                            </div>
+
+                            <div class="d-flex gap-3 justify-content-center">
+                                <button class="btn btn-outline-warning btn-lg" onclick="skipToken()"><i class="fas fa-forward"></i> Skip</button>
+                                <button class="btn btn-success btn-lg px-5" style="box-shadow: 0 0 20px rgba(63,185,80,0.4);" onclick="nextToken()"><i class="fas fa-check"></i> Complete & Next</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="glass-card">
+                            <h3 class="card-title">Waiting Queue</h3>
+                            <table class="data-grid">
+                                <thead>
+                                    <tr>
+                                        <th>Token</th>
+                                        <th>Type</th>
+                                        <th>Est Wait</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="queueList">
+                                    <tr><td>T-144</td><td><span class="status-badge bg-glow-warning">Priority</span></td><td>2 min</td><td>Up Next</td></tr>
+                                    <tr><td>T-145</td><td><span class="status-badge bg-glow-success">Standard</span></td><td>5 min</td><td>Waiting</td></tr>
+                                    <tr><td>T-146</td><td><span class="status-badge bg-glow-success">Standard</span></td><td>8 min</td><td>Waiting</td></tr>
+                                    <tr><td>T-147</td><td><span class="status-badge bg-glow-success">Standard</span></td><td>12 min</td><td>Waiting</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: INVENTORY -->
+            <div id="view-inventory" class="view-section">
+                <div class="glass-card">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="card-title mb-0">Warehouse Stock</h3>
+                        <button class="btn-glass btn-sm"><i class="fas fa-sync"></i> Refresh Data</button>
+                    </div>
+                    <table class="data-grid">
+                        <thead>
+                            <tr>
+                                <th>Commodity</th>
+                                <th>Initial Stock</th>
+                                <th>Dispersed</th>
+                                <th>Remaining</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>White Rice</strong></td>
+                                <td>5000 kg</td>
+                                <td>1240 kg</td>
+                                <td>3760 kg</td>
+                                <td><span class="status-badge bg-glow-success">Healthy</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Wheat</strong></td>
+                                <td>3000 kg</td>
+                                <td>2100 kg</td>
+                                <td>900 kg</td>
+                                <td><span class="status-badge bg-glow-warning">Monitor</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sugar</strong></td>
+                                <td>1000 kg</td>
+                                <td>200 kg</td>
+                                <td>800 kg</td>
+                                <td><span class="status-badge bg-glow-success">Healthy</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Kerosene</strong></td>
+                                <td>500 L</td>
+                                <td>450 L</td>
+                                <td class="text-danger fw-bold">50 L</td>
+                                <td><span class="status-badge bg-glow-danger">Critical</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
     </div>
 
-    <!-- Schedule Management Page -->
-    <div class="dashboard-container subcategory-page" id="schedulePage">
-        <div class="navbar">
-            <h3 class="mb-0" style="font-size: 1.2rem;"><i class="fas fa-calendar-alt me-2"></i>Shop Schedule Management</h3>
-            <div class="d-flex align-items-center">
-                <button class="back-btn me-2" data-category="back">
-                    <i class="fas fa-arrow-left me-1"></i>Back
-                </button>
-                <button class="logout-btn" id="logoutBtnSchedule">
-                    <i class="fas fa-sign-out-alt me-1"></i>Logout
-                </button>
-            </div>
-        </div>
-
-        <div class="detail-card">
-            <div class="detail-header">Select Month or Set General Schedule</div>
-            <div class="month-grid">
-                <button class="month-btn" data-month="january">Jan</button>
-                <button class="month-btn" data-month="february">Feb</button>
-                <button class="month-btn" data-month="march">Mar</button>
-                <button class="month-btn" data-month="april">Apr</button>
-                <button class="month-btn" data-month="may">May</button>
-                <button class="month-btn" data-month="june">Jun</button>
-                <button class="month-btn" data-month="july">Jul</button>
-                <button class="month-btn" data-month="august">Aug</button>
-                <button class="month-btn" data-month="september">Sep</button>
-                <button class="month-btn" data-month="october">Oct</button>
-                <button class="month-btn" data-month="november">Nov</button>
-                <button class="month-btn" data-month="december">Dec</button>
-                <button class="month-btn" data-month="general" style="background: linear-gradient(135deg, var(--accent), #5a08a0);">General</button>
-            </div>
-        </div>
-
-        <div class="detail-card" id="monthSchedule" style="display: none;">
-            <div class="detail-header">Schedule for <span id="currentMonth"></span></div>
-            <div id="monthDays">
-                <!-- Days will be generated here -->
-            </div>
-            <button class="btn btn-primary btn-sm" id="saveMonthSchedule">Save Schedule</button>
-        </div>
-
-        <div class="detail-card" id="generalSchedule" style="display: none;">
-            <div class="detail-header">General Weekly Schedule</div>
-            <div id="weekDays">
-                <!-- Week days will be generated here -->
-            </div>
-            <button class="btn btn-primary btn-sm me-2" id="saveGeneralSchedule">Save General Schedule</button>
-            <button class="apply-btn btn-sm" id="applyToAllBtn">Apply to All Months</button>
-        </div>
-    </div>
-
-    <!-- Bootstrap & Firebase JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Simulation Script -->
     <script>
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyD8tOpjuDF1Xq_3DxNSgkU4dYzE2pBI6mQ",
-            authDomain: "pdssytm.firebaseapp.com",
-            databaseURL: "https://pdssytm-default-rtdb.firebaseio.com",
-            projectId: "pdssytm",
-            storageBucket: "pdssytm.firebasestorage.app",
-            messagingSenderId: "197853991949",
-            appId: "1:197853991949:web:e73009920da00c4e98b144"
-        };
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-
-        // Shop Owner Queue Management System
-        class ShopQueueManagement {
-            constructor() {
-                this.currentQueue = [];
-                this.servedTokens = [];
-                this.currentTokenIndex = 0;
-                this.init();
-            }
-
-            init() {
-                this.loadQueueData();
-                this.setupEventListeners();
-                this.setupRealtimeListeners();
-            }
-
-            async loadQueueData() {
-                try {
-                    // Load current queue (handles both array and object formats)
-                    const queueSnapshot = await database.ref('queue/current').once('value');
-                    const rawQueue = queueSnapshot.exists() ? queueSnapshot.val() : {};
-                    this.currentQueue = Array.isArray(rawQueue) ? rawQueue : Object.values(rawQueue);
-                    
-                    // Load served tokens for today
-                    const today = new Date().toISOString().split('T')[0];
-                    const servedSnapshot = await database.ref(`servedTokens/${today}`).once('value');
-                    this.servedTokens = servedSnapshot.exists() ? Object.values(servedSnapshot.val()) : [];
-                    
-                    this.updateQueueDisplay();
-                    this.updateStatistics();
-                    
-                } catch (error) {
-                    console.error('Error loading queue data:', error);
-                }
-            }
-
-            setupRealtimeListeners() {
-                // Real-time queue updates — live listener so new bookings appear instantly
-                database.ref('queue/current').on('value', (snapshot) => {
-                    const rawQueue = snapshot.exists() ? snapshot.val() : {};
-                    this.currentQueue = Array.isArray(rawQueue) ? rawQueue : Object.values(rawQueue);
-                    this.updateQueueDisplay();
-                    this.updateStatistics();
-                });
-
-                // Real-time served tokens updates
-                const today = new Date().toISOString().split('T')[0];
-                database.ref(`servedTokens/${today}`).on('value', (snapshot) => {
-                    this.servedTokens = snapshot.exists() ? Object.values(snapshot.val()) : [];
-                    this.updateStatistics();
-                });
-            }
-
-            setupEventListeners() {
-                document.getElementById('nextTokenBtn').addEventListener('click', () => {
-                    this.serveNextToken();
-                });
-
-                document.getElementById('skipTokenBtn').addEventListener('click', () => {
-                    this.skipCurrentToken();
-                });
-
-                document.getElementById('completeTokenBtn').addEventListener('click', () => {
-                    this.completeCurrentToken();
-                });
-
-                document.getElementById('searchToken').addEventListener('input', (e) => {
-                    this.filterTokens(e.target.value);
-                });
-            }
-
-            updateQueueDisplay() {
-                this.displayCurrentToken();
-                this.displayTokenQueue();
-                this.displayPriorityQueue();
-            }
-
-            displayCurrentToken() {
-                const currentTokenElement = document.getElementById('currentServingToken');
-                
-                if (this.currentQueue.length > 0 && this.currentTokenIndex < this.currentQueue.length) {
-                    const currentToken = this.currentQueue[this.currentTokenIndex];
-                    currentTokenElement.innerHTML = `
-                        <div class="display-2 fw-bold">${currentToken.token}</div>
-                        <div class="fs-5">${this.formatTime(currentToken.time)} • ${this.getPriorityText(currentToken.priority)}</div>
-                    `;
-                } else {
-                    currentTokenElement.textContent = 'No active token';
-                }
-            }
-
-            displayTokenQueue() {
-                const queueList = document.getElementById('tokenQueueList');
-                
-                if (this.currentQueue.length === 0) {
-                    queueList.innerHTML = '<p class="text-muted text-center">No tokens in queue</p>';
-                    return;
-                }
-
-                let html = '';
-                this.currentQueue.forEach((token, index) => {
-                    const isCurrent = index === this.currentTokenIndex;
-                    const isNext = index === this.currentTokenIndex + 1;
-                    const position = index + 1;
-                    
-                    html += `
-                        <div class="token-item ${isCurrent ? 'current-serving' : ''} ${isNext ? 'next' : ''}">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <strong>${token.token}</strong>
-                                    <br>
-                                    <small>Time: ${this.formatTime(token.time)}</small>
-                                    ${token.priority !== 'normal' ? 
-                                        `<span class="priority-badge ms-2">${token.priority}</span>` : ''}
-                                </div>
-                                <div class="text-end">
-                                    <span class="badge ${isCurrent ? 'bg-success' : 'bg-secondary'}">${position}</span>
-                                    <br>
-                                    <small>Wait: ${position * 5} min</small>
-                                </div>
-                            </div>
-                            ${isCurrent ? '<div class="text-center mt-2"><span class="badge bg-success">CURRENTLY SERVING</span></div>' : ''}
-                        </div>
-                    `;
-                });
-                
-                queueList.innerHTML = html;
-            }
-
-            displayPriorityQueue() {
-                const priorityQueue = document.getElementById('priorityQueue');
-                const priorityTokens = this.currentQueue.filter(token => 
-                    token.priority !== 'normal' && 
-                    this.currentQueue.indexOf(token) > this.currentTokenIndex
-                );
-
-                if (priorityTokens.length === 0) {
-                    priorityQueue.innerHTML = '<p class="text-muted text-center">No priority tokens</p>';
-                    return;
-                }
-
-                let html = '';
-                priorityTokens.forEach((token, index) => {
-                    html += `
-                        <div class="token-item next">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <strong>${token.token}</strong>
-                                    <span class="priority-badge ms-2">${token.priority}</span>
-                                </div>
-                                <div>
-                                    <small>Position: ${this.currentQueue.indexOf(token) + 1}</small>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-                
-                priorityQueue.innerHTML = html;
-            }
-
-            updateStatistics() {
-                document.getElementById('totalTokens').textContent = this.currentQueue.length;
-                document.getElementById('waitingTokens').textContent = Math.max(0, this.currentQueue.length - this.currentTokenIndex - 1);
-                document.getElementById('servedTokens').textContent = this.servedTokens.length;
-                
-                const avgWaitTime = this.calculateAverageWaitTime();
-                document.getElementById('avgWaitTime').textContent = avgWaitTime + ' min';
-                
-                const estCompletion = this.calculateEstimatedCompletion();
-                document.getElementById('estCompletion').textContent = estCompletion;
-            }
-
-            calculateAverageWaitTime() {
-                if (this.servedTokens.length === 0) return 0;
-                const totalWait = this.servedTokens.reduce((sum, token) => sum + (token.servedTime - token.timestamp), 0);
-                return Math.round((totalWait / this.servedTokens.length) / (1000 * 60)); // Convert to minutes
-            }
-
-            calculateEstimatedCompletion() {
-                const waitingCount = Math.max(0, this.currentQueue.length - this.currentTokenIndex - 1);
-                if (waitingCount === 0) return 'Now';
-                
-                const estimatedMinutes = waitingCount * 5; // 5 minutes per token
-                const completionTime = new Date(Date.now() + estimatedMinutes * 60000);
-                return completionTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            }
-
-            async serveNextToken() {
-                if (this.currentTokenIndex < this.currentQueue.length - 1) {
-                    this.currentTokenIndex++;
-                    this.updateQueueDisplay();
-                    this.updateStatistics();
-                    
-                    // Notify the next customer (this would integrate with your notification system)
-                    this.notifyNextCustomer();
-                }
-            }
-
-            async skipCurrentToken() {
-                if (this.currentQueue.length > 0 && this.currentTokenIndex < this.currentQueue.length) {
-                    const skippedToken = this.currentQueue[this.currentTokenIndex];
-                    
-                    // Move to next token
-                    if (this.currentTokenIndex < this.currentQueue.length - 1) {
-                        this.currentTokenIndex++;
-                    }
-                    
-                    this.updateQueueDisplay();
-                    this.updateStatistics();
-                    
-                    // Log the skipped token
-                    this.logSkippedToken(skippedToken);
-                }
-            }
-
-            async completeCurrentToken() {
-                if (this.currentQueue.length > 0 && this.currentTokenIndex < this.currentQueue.length) {
-                    const completedToken = this.currentQueue[this.currentTokenIndex];
-                    
-                    // Remove from queue
-                    this.currentQueue.splice(this.currentTokenIndex, 1);
-                    
-                    // Update Firebase
-                    await database.ref('queue/current').set(this.currentQueue);
-                    
-                    // Add to served tokens
-                    await this.logServedToken(completedToken);
-                    
-                    this.updateQueueDisplay();
-                    this.updateStatistics();
-                }
-            }
-
-            async logServedToken(token) {
-                const today = new Date().toISOString().split('T')[0];
-                const servedTokenData = {
-                    ...token,
-                    servedTime: Date.now(),
-                    servedBy: 'shop_owner' // In real system, this would be the actual shop owner ID
-                };
-                
-                await database.ref(`servedTokens/${today}/${token.token}`).set(servedTokenData);
-            }
-
-            async logSkippedToken(token) {
-                const today = new Date().toISOString().split('T')[0];
-                const skippedTokenData = {
-                    ...token,
-                    skippedTime: Date.now(),
-                    reason: 'manual_skip'
-                };
-                
-                await database.ref(`skippedTokens/${today}/${token.token}`).set(skippedTokenData);
-            }
-
-            notifyNextCustomer() {
-                if (this.currentTokenIndex < this.currentQueue.length) {
-                    const nextToken = this.currentQueue[this.currentTokenIndex];
-                    // This would integrate with your notification system (SMS/Email/Push)
-                    console.log('Notifying customer with token:', nextToken.token);
-                }
-            }
-
-            filterTokens(searchTerm) {
-                const tokens = document.querySelectorAll('.token-item');
-                tokens.forEach(token => {
-                    const tokenNumber = token.querySelector('strong').textContent;
-                    if (tokenNumber.toLowerCase().includes(searchTerm.toLowerCase())) {
-                        token.style.display = 'block';
-                    } else {
-                        token.style.display = 'none';
-                    }
-                });
-            }
-
-            formatTime(timeString) {
-                const [hours, minutes] = timeString.split(':');
-                const hour = parseInt(hours);
-                const ampm = hour >= 12 ? 'PM' : 'AM';
-                const displayHour = hour > 12 ? hour - 12 : hour;
-                return `${displayHour}:${minutes} ${ampm}`;
-            }
-
-            getPriorityText(priority) {
-                const priorityMap = {
-                    'normal': 'Normal',
-                    'senior': 'Senior Citizen',
-                    'disabled': 'Differently Abled',
-                    'pregnant': 'Pregnant Woman'
-                };
-                return priorityMap[priority] || priority;
-            }
+        // --- NAVIGATION & LOGIN ---
+        function demoLogin() {
+            document.getElementById('email').value = 'terminal-8921@smartpds.gov';
+            document.getElementById('password').value = 'secure_access_001';
         }
 
-        // Initialize Shop Queue Management when dashboard loads
-        let shopQueueSystem = null;
-
-        // DOM Elements
-        const loginSection = document.getElementById('loginSection');
-        const dashboardSection = document.getElementById('dashboardSection');
-        const grainsPage = document.getElementById('grainsPage');
-        const liquidPage = document.getElementById('liquidPage');
-        const schedulePage = document.getElementById('schedulePage');
-        const loginBtn = document.getElementById('loginBtn');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const logoutBtnGrains = document.getElementById('logoutBtnGrains');
-        const logoutBtnLiquid = document.getElementById('logoutBtnLiquid');
-        const logoutBtnSchedule = document.getElementById('logoutBtnSchedule');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const categoryOptions = document.querySelectorAll('.category-option');
-        const backButtons = document.querySelectorAll('.back-btn');
-        const scheduleBtn = document.getElementById('scheduleBtn');
-        const monthBtns = document.querySelectorAll('.month-btn');
-        const monthSchedule = document.getElementById('monthSchedule');
-        const generalSchedule = document.getElementById('generalSchedule');
-        const currentMonthElement = document.getElementById('currentMonth');
-        const monthDaysElement = document.getElementById('monthDays');
-        const weekDaysElement = document.getElementById('weekDays');
-        const saveMonthScheduleBtn = document.getElementById('saveMonthSchedule');
-        const saveGeneralScheduleBtn = document.getElementById('saveGeneralSchedule');
-        const applyToAllBtn = document.getElementById('applyToAllBtn');
-        const loginLoading = document.getElementById('loginLoading');
-        const recentTransactionsElement = document.getElementById('recentTransactions');
-        const stockListElement = document.getElementById('stockList');
-
-        // Stock data with initial values (5kg each)
-        const initialStock = {
-            "White Rice": { quantity: 5, unit: "kg", category: "grains" },
-            "Parboiled Rice": { quantity: 5, unit: "kg", category: "grains" },
-            "Wheat": { quantity: 5, unit: "kg", category: "grains" },
-            "Edible Oil": { quantity: 5, unit: "L", category: "liquid" },
-            "Kerosene": { quantity: 5, unit: "L", category: "liquid" }
-        };
-
-        let currentStock = JSON.parse(JSON.stringify(initialStock));
-
-        // Store the current general schedule for applying to months
-        let currentGeneralSchedule = {};
-
-        // Generate time options for dropdown
-        function generateTimeOptions() {
-            let options = '';
-            for (let hour = 1; hour <= 12; hour++) {
-                for (let min = 0; min < 60; min += 30) {
-                    const time = `${hour}:${min.toString().padStart(2, '0')}`;
-                    options += `<option value="${time}">${time}</option>`;
-                }
-            }
-            return options;
+        function doLogin() {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('appSection').style.display = 'flex';
+            initCharts();
+            startLiveSimulation();
         }
 
-        // Generate week days for general schedule
-        function generateWeekDays() {
-            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-            const timeOptions = generateTimeOptions();
-            
-            weekDaysElement.innerHTML = '';
-            
-            days.forEach(day => {
-                const dayDiv = document.createElement('div');
-                dayDiv.className = 'schedule-day';
-                dayDiv.innerHTML = `
-                    <div class="day-header">${day}</div>
-                    <select class="form-select mb-2 day-status">
-                        <option value="open">Open</option>
-                        <option value="closed">Closed</option>
-                    </select>
-                    <div class="time-input">
-                        <div class="time-row">
-                            <span class="time-label">From:</span>
-                            <select class="form-select from-time" style="width: 90px;">${timeOptions}</select>
-                            <select class="form-select from-ampm" style="width: 70px;">
-                                <option value="AM">AM</option>
-                                <option value="PM">PM</option>
-                            </select>
-                        </div>
-                        <div class="time-row">
-                            <span class="time-label">To:</span>
-                            <select class="form-select to-time" style="width: 90px;">${timeOptions}</select>
-                            <select class="form-select to-ampm" style="width: 70px;">
-                                <option value="AM">AM</option>
-                                <option value="PM">PM</option>
-                            </select>
-                        </div>
-                    </div>
-                `;
-                
-                weekDaysElement.appendChild(dayDiv);
-                
-                // Add event listener to the status dropdown
-                const statusSelect = dayDiv.querySelector('.day-status');
-                const timeInput = dayDiv.querySelector('.time-input');
-                
-                statusSelect.addEventListener('change', function() {
-                    if (this.value === 'open') {
-                        timeInput.style.display = 'block';
-                    } else {
-                        timeInput.style.display = 'none';
-                    }
-                    // Update the current general schedule
-                    updateGeneralSchedule();
-                });
-                
-                // Add event listeners to time selects to update general schedule
-                const timeSelects = dayDiv.querySelectorAll('select');
-                timeSelects.forEach(select => {
-                    select.addEventListener('change', updateGeneralSchedule);
-                });
-                
-                // Initially hide time input if closed
-                if (statusSelect.value === 'closed') {
-                    timeInput.style.display = 'none';
-                }
-                
-                // Initialize the current general schedule
-                currentGeneralSchedule[day] = {
-                    status: statusSelect.value,
-                    fromTime: dayDiv.querySelector('.from-time').value,
-                    fromAmPm: dayDiv.querySelector('.from-ampm').value,
-                    toTime: dayDiv.querySelector('.to-time').value,
-                    toAmPm: dayDiv.querySelector('.to-ampm').value
-                };
-            });
+        function logout() {
+            document.getElementById('appSection').style.display = 'none';
+            document.getElementById('loginSection').style.display = 'flex';
         }
 
-        // Update the current general schedule object
-        function updateGeneralSchedule() {
-            const dayElements = document.querySelectorAll('#weekDays .schedule-day');
-            dayElements.forEach(day => {
-                const dayName = day.querySelector('.day-header').textContent;
-                const status = day.querySelector('.day-status').value;
-                const fromTime = day.querySelector('.from-time').value;
-                const fromAmPm = day.querySelector('.from-ampm').value;
-                const toTime = day.querySelector('.to-time').value;
-                const toAmPm = day.querySelector('.to-ampm').value;
-                
-                currentGeneralSchedule[dayName] = {
-                    status: status,
-                    fromTime: fromTime,
-                    fromAmPm: fromAmPm,
-                    toTime: toTime,
-                    toAmPm: toAmPm
-                };
-            });
+        function switchView(viewId, element) {
+            // Update nav active state
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+
+            // Update title
+            const titles = {
+                'dashboard': 'Command Center',
+                'queue': 'Queue Management',
+                'inventory': 'Live Inventory'
+            };
+            document.getElementById('pageTitle').innerText = titles[viewId];
+
+            // Switch views
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.getElementById('view-' + viewId).classList.add('active');
         }
 
-        // Login Function
-        loginBtn.addEventListener('click', function() {
-            const email = emailInput.value;
-            const password = passwordInput.value;
-            
-            if (email && password) {
-                // Show loading indicator
-                loginLoading.style.display = 'block';
-                loginBtn.style.display = 'none';
-                
-                // For demo purposes, we'll just show the dashboard
-                // In a real app, you would authenticate with Firebase Auth
-                setTimeout(() => {
-                    // Hide loading indicator
-                    loginLoading.style.display = 'none';
-                    loginBtn.style.display = 'block';
-                    
-                    // Show dashboard
-                    loginSection.style.display = 'none';
-                    dashboardSection.style.display = 'block';
-                    
-                    // Initialize Shop Queue Management System
-                    shopQueueSystem = new ShopQueueManagement();
-                    
-                    // Initialize charts and real-time listeners
-                    initCharts();
-                    setupRealtimeListeners();
-                }, 1500);
-            } else {
-                alert("Please enter both email and password.");
-            }
-        });
+        // --- CLOCK ---
+        setInterval(() => {
+            document.getElementById('clock').innerText = new Date().toLocaleTimeString();
+        }, 1000);
 
-        // Logout Function
-        logoutBtn.addEventListener('click', function() {
-            dashboardSection.style.display = 'none';
-            loginSection.style.display = 'flex';
-            emailInput.value = '';
-            passwordInput.value = '';
-        });
-        
-        logoutBtnGrains.addEventListener('click', function() {
-            grainsPage.style.display = 'none';
-            loginSection.style.display = 'flex';
-            emailInput.value = '';
-            passwordInput.value = '';
-        });
-        
-        logoutBtnLiquid.addEventListener('click', function() {
-            liquidPage.style.display = 'none';
-            loginSection.style.display = 'flex';
-            emailInput.value = '';
-            passwordInput.value = '';
-        });
-        
-        logoutBtnSchedule.addEventListener('click', function() {
-            schedulePage.style.display = 'none';
-            loginSection.style.display = 'flex';
-            emailInput.value = '';
-            passwordInput.value = '';
-        });
-
-        // Category Selection
-        categoryOptions.forEach(option => {
-            option.addEventListener('click', function() {
-                const category = this.getAttribute('data-category');
-                
-                if (category === 'grains') {
-                    dashboardSection.style.display = 'none';
-                    grainsPage.style.display = 'block';
-                    initGrainsDetailChart();
-                } else if (category === 'liquid') {
-                    dashboardSection.style.display = 'none';
-                    liquidPage.style.display = 'block';
-                    initLiquidDetailChart();
-                }
-            });
-        });
-
-        // Back to Dashboard
-        backButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                grainsPage.style.display = 'none';
-                liquidPage.style.display = 'none';
-                schedulePage.style.display = 'none';
-                dashboardSection.style.display = 'block';
-            });
-        });
-
-        // Schedule Management
-        scheduleBtn.addEventListener('click', function() {
-            dashboardSection.style.display = 'none';
-            schedulePage.style.display = 'block';
-            
-            // Generate week days if not already generated
-            generateWeekDays();
-        });
-
-        // Month Selection
-        monthBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const month = this.getAttribute('data-month');
-                
-                if (month === 'general') {
-                    monthSchedule.style.display = 'none';
-                    generalSchedule.style.display = 'block';
-                } else {
-                    generalSchedule.style.display = 'none';
-                    monthSchedule.style.display = 'block';
-                    currentMonthElement.textContent = month.charAt(0).toUpperCase() + month.slice(1);
-                    generateMonthDays(month);
-                }
-            });
-        });
-
-        // Generate days for a month
-        function generateMonthDays(month) {
-            // Clear previous days
-            monthDaysElement.innerHTML = '';
-            
-            // Get number of days in month (simplified)
-            const daysInMonth = 31; // Simplified for demo
-            const timeOptions = generateTimeOptions();
-            
-            for (let i = 1; i <= daysInMonth; i++) {
-                const dayDiv = document.createElement('div');
-                dayDiv.className = 'schedule-day';
-                
-                // Get day of week
-                const date = new Date(2023, getMonthIndex(month), i);
-                const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'long' });
-                
-                // Check if we have a general schedule for this day
-                const generalDay = currentGeneralSchedule[dayOfWeek];
-                const status = generalDay ? generalDay.status : 'open';
-                const fromTime = generalDay ? generalDay.fromTime : '9:00';
-                const fromAmPm = generalDay ? generalDay.fromAmPm : 'AM';
-                const toTime = generalDay ? generalDay.toTime : '6:00';
-                const toAmPm = generalDay ? generalDay.toAmPm : 'PM';
-                
-                dayDiv.innerHTML = `
-                    <div class="day-header">${dayOfWeek}, ${month.charAt(0).toUpperCase() + month.slice(1)} ${i}</div>
-                    <select class="form-select mb-2 day-status">
-                        <option value="open" ${status === 'open' ? 'selected' : ''}>Open</option>
-                        <option value="closed" ${status === 'closed' ? 'selected' : ''}>Closed</option>
-                    </select>
-                    <div class="time-input" style="${status === 'open' ? 'display: block;' : 'display: none;'}">
-                        <div class="time-row">
-                            <span class="time-label">From:</span>
-                            <select class="form-select from-time" style="width: 90px;">${timeOptions}</select>
-                            <select class="form-select from-ampm" style="width: 70px;">
-                                <option value="AM" ${fromAmPm === 'AM' ? 'selected' : ''}>AM</option>
-                                <option value="PM" ${fromAmPm === 'PM' ? 'selected' : ''}>PM</option>
-                            </select>
-                        </div>
-                        <div class="time-row">
-                            <span class="time-label">To:</span>
-                            <select class="form-select to-time" style="width: 90px;">${timeOptions}</select>
-                            <select class="form-select to-ampm" style="width: 70px;">
-                                <option value="AM" ${toAmPm === 'AM' ? 'selected' : ''}>AM</option>
-                                <option value="PM" ${toAmPm === 'PM' ? 'selected' : ''}>PM</option>
-                            </select>
-                        </div>
-                    </div>
-                `;
-                
-                // Set the selected time values
-                setTimeout(() => {
-                    if (generalDay) {
-                        dayDiv.querySelector('.from-time').value = fromTime;
-                        dayDiv.querySelector('.to-time').value = toTime;
-                    }
-                }, 0);
-                
-                monthDaysElement.appendChild(dayDiv);
-                
-                // Add event listener to the status dropdown
-                const statusSelect = dayDiv.querySelector('.day-status');
-                const timeInput = dayDiv.querySelector('.time-input');
-                
-                statusSelect.addEventListener('change', function() {
-                    if (this.value === 'open') {
-                        timeInput.style.display = 'block';
-                    } else {
-                        timeInput.style.display = 'none';
-                    }
-                });
-            }
-        }
-
-        // Helper function to get month index
-        function getMonthIndex(month) {
-            const months = [
-                'january', 'february', 'march', 'april', 'may', 'june',
-                'july', 'august', 'september', 'october', 'november', 'december'
-            ];
-            return months.indexOf(month);
-        }
-
-        // Save month schedule
-        saveMonthScheduleBtn.addEventListener('click', function() {
-            const month = currentMonthElement.textContent.toLowerCase();
-            const scheduleData = [];
-            
-            const dayElements = monthDaysElement.querySelectorAll('.schedule-day');
-            dayElements.forEach((day, index) => {
-                const status = day.querySelector('.day-status').value;
-                const fromTime = day.querySelector('.from-time').value;
-                const fromAmPm = day.querySelector('.from-ampm').value;
-                const toTime = day.querySelector('.to-time').value;
-                const toAmPm = day.querySelector('.to-ampm').value;
-                const dayName = getDayName(month, index + 1);
-                
-                scheduleData.push({
-                    day: index + 1,
-                    dayName: dayName,
-                    status: status,
-                    fromTime: status === 'open' ? `${fromTime} ${fromAmPm}` : null,
-                    toTime: status === 'open' ? `${toTime} ${toAmPm}` : null
-                });
-            });
-            
-            // Save to Firebase Realtime Database
-            database.ref('shopSchedule/' + month).set({
-                schedule: scheduleData,
-                lastUpdated: Date.now()
-            })
-            .then(() => {
-                alert(`Schedule for ${month} saved successfully!`);
-            })
-            .catch((error) => {
-                console.error("Error saving schedule: ", error);
-                alert("Error saving schedule. Please try again.");
-            });
-        });
-
-        // Helper function to get day name from date
-        function getDayName(month, day) {
-            const date = new Date(2023, getMonthIndex(month), day);
-            return date.toLocaleDateString('en-US', { weekday: 'long' });
-        }
-
-        // Save general schedule
-        saveGeneralScheduleBtn.addEventListener('click', function() {
-            const scheduleData = [];
-            
-            const dayElements = document.querySelectorAll('#weekDays .schedule-day');
-            dayElements.forEach((day) => {
-                const dayName = day.querySelector('.day-header').textContent;
-                const status = day.querySelector('.day-status').value;
-                const fromTime = day.querySelector('.from-time').value;
-                const fromAmPm = day.querySelector('.from-ampm').value;
-                const toTime = day.querySelector('.to-time').value;
-                const toAmPm = day.querySelector('.to-ampm').value;
-                
-                scheduleData.push({
-                    day: dayName,
-                    status: status,
-                    fromTime: status === 'open' ? `${fromTime} ${fromAmPm}` : null,
-                    toTime: status === 'open' ? `${toTime} ${toAmPm}` : null
-                });
-            });
-            
-            // Save to Firebase Realtime Database
-            database.ref('shopSchedule/general').set({
-                schedule: scheduleData,
-                lastUpdated: Date.now()
-            })
-            .then(() => {
-                alert("General schedule saved successfully!");
-            })
-            .catch((error) => {
-                console.error("Error saving schedule: ", error);
-                alert("Error saving schedule. Please try again.");
-            });
-        });
-
-        // Apply to all months
-        applyToAllBtn.addEventListener('click', function() {
-            if (confirm("Are you sure you want to apply this schedule to all months? This will overwrite any existing schedules.")) {
-                // Update the current general schedule first
-                updateGeneralSchedule();
-                
-                // Apply to all months
-                const months = [
-                    'january', 'february', 'march', 'april', 'may', 'june',
-                    'july', 'august', 'september', 'october', 'november', 'december'
-                ];
-                
-                let updateCount = 0;
-                const totalMonths = months.length;
-                
-                months.forEach(month => {
-                    // Create a new schedule for this month based on the general pattern
-                    const monthScheduleData = [];
-                    
-                    // For each day in the month, apply the general schedule for that day of the week
-                    const daysInMonth = 31; // Simplified for demo
-                    for (let day = 1; day <= daysInMonth; day++) {
-                        const dayName = getDayName(month, day);
-                        const generalDayData = currentGeneralSchedule[dayName];
-                        
-                        if (generalDayData) {
-                            monthScheduleData.push({
-                                day: day,
-                                dayName: dayName,
-                                status: generalDayData.status,
-                                fromTime: generalDayData.status === 'open' ? `${generalDayData.fromTime} ${generalDayData.fromAmPm}` : null,
-                                toTime: generalDayData.status === 'open' ? `${generalDayData.toTime} ${generalDayData.toAmPm}` : null
-                            });
-                        }
-                    }
-                    
-                    // Save to Firebase Realtime Database
-                    database.ref('shopSchedule/' + month).set({
-                        schedule: monthScheduleData,
-                        lastUpdated: Date.now(),
-                        basedOnGeneral: true
-                    })
-                    .then(() => {
-                        updateCount++;
-                        if (updateCount === totalMonths) {
-                            alert("Schedule applied to all months successfully!");
-                        }
-                    })
-                    .catch((error) => {
-                        console.error(`Error saving schedule for ${month}: `, error);
-                    });
-                });
-            }
-        });
-
-        // Setup real-time listeners for Firebase data
-        function setupRealtimeListeners() {
-            // Listen for new transactions
-            database.ref('transactions').orderByChild('timestamp').limitToLast(5).on('value', (snapshot) => {
-                const transactions = snapshot.val();
-                updateRecentTransactions(transactions);
-                updateStockLevels(transactions);
-            });
-        }
-
-        // Update recent transactions display
-        function updateRecentTransactions(transactions) {
-            if (!transactions) {
-                recentTransactionsElement.innerHTML = '<p class="text-center">No recent transactions</p>';
-                return;
-            }
-            
-            let html = '';
-            Object.keys(transactions).forEach(key => {
-                const transaction = transactions[key];
-                html += `
-                    <div class="border-bottom pb-2 mb-2">
-                        <div class="d-flex justify-content-between">
-                            <strong>${transaction.item || 'Item'}</strong>
-                            <span>${transaction.quantityDispensed || transaction.quantity || 0} ${transaction.category === 'Liquid' ? 'L' : 'kg'}</span>
-                        </div>
-                        <small class="text-muted">${new Date(transaction.timestamp).toLocaleTimeString()}</small>
-                    </div>
-                `;
-            });
-            
-            recentTransactionsElement.innerHTML = html;
-        }
-
-        // Update stock levels based on transactions
-        function updateStockLevels(transactions) {
-            if (!transactions) return;
-            
-            // Reset stock data to initial values
-            currentStock = JSON.parse(JSON.stringify(initialStock));
-            
-            // Process transactions to update stock
-            Object.keys(transactions).forEach(key => {
-                const transaction = transactions[key];
-                const itemName = transaction.item;
-                const quantity = parseFloat(transaction.quantityDispensed || transaction.quantity || 0);
-                
-                if (currentStock[itemName]) {
-                    currentStock[itemName].quantity -= quantity;
-                    if (currentStock[itemName].quantity < 0) currentStock[itemName].quantity = 0;
-                }
-            });
-            
-            // Update the stock display
-            updateStockDisplay();
-        }
-
-        // Update stock display
-        function updateStockDisplay() {
-            // Update the stock list
-            let html = '';
-            for (let item in currentStock) {
-                const itemData = currentStock[item];
-                html += `
-                    <li class="list-group-item d-flex justify-content-between align-items-center py-2">
-                        ${item}
-                        <span class="badge bg-primary rounded-pill">${itemData.quantity} ${itemData.unit}</span>
-                    </li>
-                `;
-            }
-            stockListElement.innerHTML = html;
-            
-            // Update stock management table
-            updateStockManagementTable();
-            
-            // Update individual item displays if on those pages
-            if (grainsPage.style.display === 'block') {
-                updateGrainsPage();
-            }
-            
-            if (liquidPage.style.display === 'block') {
-                updateLiquidPage();
-            }
-        }
-
-        // Update stock management table
-        function updateStockManagementTable() {
-            for (let item in currentStock) {
-                const itemData = currentStock[item];
-                const initialQty = initialStock[item].quantity;
-                const used = initialQty - itemData.quantity;
-                const percent = (itemData.quantity / initialQty) * 100;
-                
-                // Update table values
-                document.getElementById(`${item.replace(/\s+/g, '')}Current`).textContent = `${itemData.quantity} ${itemData.unit}`;
-                document.getElementById(`${item.replace(/\s+/g, '')}Used`).textContent = `${used} ${itemData.unit}`;
-                
-                // Update progress bars
-                const progressBar = document.getElementById(`${item.replace(/\s+/g, '')}Bar`);
-                const percentText = document.getElementById(`${item.replace(/\s+/g, '')}Percent`);
-                
-                progressBar.style.width = `${percent}%`;
-                percentText.textContent = `${Math.round(percent)}%`;
-                
-                // Update progress bar color based on stock level
-                progressBar.classList.remove('stock-high', 'stock-medium', 'stock-low');
-                if (percent > 50) {
-                    progressBar.classList.add('stock-high');
-                } else if (percent > 25) {
-                    progressBar.classList.add('stock-medium');
-                } else {
-                    progressBar.classList.add('stock-low');
-                }
-            }
-        }
-
-        // Update grains page
-        function updateGrainsPage() {
-            document.getElementById('whiteRiceStock').textContent = `${currentStock['White Rice'].quantity} kg`;
-            document.getElementById('parboiledRiceStock').textContent = `${currentStock['Parboiled Rice'].quantity} kg`;
-            document.getElementById('wheatStock').textContent = `${currentStock['Wheat'].quantity} kg`;
-            
-            document.getElementById('whiteRiceUsedDetail').textContent = `${initialStock['White Rice'].quantity - currentStock['White Rice'].quantity} kg`;
-            document.getElementById('parboiledRiceUsedDetail').textContent = `${initialStock['Parboiled Rice'].quantity - currentStock['Parboiled Rice'].quantity} kg`;
-            document.getElementById('wheatUsedDetail').textContent = `${initialStock['Wheat'].quantity - currentStock['Wheat'].quantity} kg`;
-            
-            // Update grains totals
-            const totalGrains = currentStock['White Rice'].quantity + currentStock['Parboiled Rice'].quantity + currentStock['Wheat'].quantity;
-            const initialGrains = initialStock['White Rice'].quantity + initialStock['Parboiled Rice'].quantity + initialStock['Wheat'].quantity;
-            document.getElementById('grainsTotalStock').textContent = `${totalGrains} kg`;
-            document.getElementById('grainsRemaining').textContent = `${totalGrains} kg`;
-            document.getElementById('grainsSoldToday').textContent = `${initialGrains - totalGrains} kg`;
-            
-            // Update alerts
-            updateGrainsAlerts();
-        }
-
-        // Update liquid page
-        function updateLiquidPage() {
-            document.getElementById('edibleOilStock').textContent = `${currentStock['Edible Oil'].quantity} L`;
-            document.getElementById('keroseneStock').textContent = `${currentStock['Kerosene'].quantity} L`;
-            
-            document.getElementById('edibleOilUsedDetail').textContent = `${initialStock['Edible Oil'].quantity - currentStock['Edible Oil'].quantity} L`;
-            document.getElementById('keroseneUsedDetail').textContent = `${initialStock['Kerosene'].quantity - currentStock['Kerosene'].quantity} L`;
-            
-            // Update liquid totals
-            const totalLiquid = currentStock['Edible Oil'].quantity + currentStock['Kerosene'].quantity;
-            const initialLiquid = initialStock['Edible Oil'].quantity + initialStock['Kerosene'].quantity;
-            document.getElementById('liquidTotalStock').textContent = `${totalLiquid} L`;
-            document.getElementById('liquidRemaining').textContent = `${totalLiquid} L`;
-            document.getElementById('liquidSoldToday').textContent = `${initialLiquid - totalLiquid} L`;
-            
-            // Update alerts
-            updateLiquidAlerts();
-        }
-
-        // Update grains alerts
-        function updateGrainsAlerts() {
-            const alertsElement = document.getElementById('grainsAlerts');
-            let html = '';
-            
-            if (currentStock['White Rice'].quantity < 1) {
-                html += `
-                    <div class="alert alert-warning py-2">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                        <strong>Low Stock Warning</strong>
-                        <p class="mb-0 mt-1" style="font-size: 0.85rem;">White Rice is out of stock. Consider restocking.</p>
-                    </div>
-                `;
-            }
-            
-            if (currentStock['Parboiled Rice'].quantity < 1) {
-                html += `
-                    <div class="alert alert-warning py-2">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                        <strong>Low Stock Warning</strong>
-                        <p class="mb-0 mt-1" style="font-size: 0.85rem;">Parboiled Rice is out of stock. Consider restocking.</p>
-                    </div>
-                `;
-            }
-            
-            if (currentStock['Wheat'].quantity < 1) {
-                html += `
-                    <div class="alert alert-warning py-2">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                        <strong>Low Stock Warning</strong>
-                        <p class="mb-0 mt-1" style="font-size: 0.85rem;">Wheat is out of stock. Consider restocking.</p>
-                    </div>
-                `;
-            }
-            
-            if (html === '') {
-                html = `
-                    <div class="alert alert-info py-2">
-                        <i class="fas fa-info-circle me-2"></i>
-                        <strong>All items in stock</strong>
-                        <p class="mb-0 mt-1" style="font-size: 0.85rem;">Current stock levels are good.</p>
-                    </div>
-                `;
-            }
-            
-            alertsElement.innerHTML = html;
-        }
-
-        // Update liquid alerts
-        function updateLiquidAlerts() {
-            const alertsElement = document.getElementById('liquidAlerts');
-            let html = '';
-            
-            if (currentStock['Edible Oil'].quantity < 1) {
-                html += `
-                    <div class="alert alert-warning py-2">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                        <strong>Low Stock Warning</strong>
-                        <p class="mb-0 mt-1" style="font-size: 0.85rem;">Edible Oil is out of stock. Consider restocking.</p>
-                    </div>
-                `;
-            }
-            
-            if (currentStock['Kerosene'].quantity < 1) {
-                html += `
-                    <div class="alert alert-warning py-2">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                        <strong>Low Stock Warning</strong>
-                        <p class="mb-0 mt-1" style="font-size: 0.85rem;">Kerosene is out of stock. Consider restocking.</p>
-                    </div>
-                `;
-            }
-            
-            if (html === '') {
-                html = `
-                    <div class="alert alert-info py-2">
-                        <i class="fas fa-info-circle me-2"></i>
-                        <strong>All items in stock</strong>
-                        <p class="mb-0 mt-1" style="font-size: 0.85rem;">Current stock levels are good.</p>
-                    </div>
-                `;
-            }
-            
-            alertsElement.innerHTML = html;
-        }
-
-        // Initialize Charts
+        // --- CHARTS ---
+        let flowChartInstance = null;
         function initCharts() {
-            // Stock Chart
-            const stockCtx = document.getElementById('stockChart').getContext('2d');
-            const stockChart = new Chart(stockCtx, {
-                type: 'pie',
-                data: {
-                    labels: ['White Rice', 'Parboiled Rice', 'Wheat', 'Edible Oil', 'Kerosene'],
-                    datasets: [{
-                        data: [5, 5, 5, 5, 5],
-                        backgroundColor: [
-                            '#4361ee',
-                            '#4cc9f0',
-                            '#7209b7',
-                            '#3a0ca3',
-                            '#f72585'
-                        ],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                font: {
-                                    size: 11
-                                }
-                            }
-                        }
-                    }
-                }
-            });
+            if(flowChartInstance) return;
+            const ctx = document.getElementById('flowChart').getContext('2d');
+            
+            // Create gradient
+            let gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(88, 166, 255, 0.5)');
+            gradient.addColorStop(1, 'rgba(88, 166, 255, 0.0)');
 
-            // Stock Management Chart
-            const stockManagementCtx = document.getElementById('stockManagementChart').getContext('2d');
-            const stockManagementChart = new Chart(stockManagementCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['White Rice', 'Parboiled Rice', 'Wheat', 'Edible Oil', 'Kerosene'],
-                    datasets: [{
-                        label: 'Current Stock',
-                        data: [5, 5, 5, 5, 5],
-                        backgroundColor: '#4361ee',
-                        borderWidth: 0,
-                        borderRadius: 5
-                    }, {
-                        label: 'Initial Stock',
-                        data: [5, 5, 5, 5, 5],
-                        backgroundColor: '#4cc9f0',
-                        borderWidth: 0,
-                        borderRadius: 5
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            labels: {
-                                font: {
-                                    size: 11
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                font: {
-                                    size: 10
-                                }
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                font: {
-                                    size: 10
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-
-            // Transactions Chart
-            const transactionsCtx = document.getElementById('transactionsChart').getContext('2d');
-            const transactionsChart = new Chart(transactionsCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['White Rice', 'Parboiled Rice', 'Wheat', 'Edible Oil', 'Kerosene'],
-                    datasets: [{
-                        label: 'Transactions Today',
-                        data: [0, 0, 0, 0, 0],
-                        backgroundColor: '#4361ee',
-                        borderWidth: 0,
-                        borderRadius: 5
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            labels: {
-                                font: {
-                                    size: 11
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                font: {
-                                    size: 10
-                                }
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                font: {
-                                    size: 10
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-
-            // Sales Chart
-            const salesCtx = document.getElementById('salesChart').getContext('2d');
-            const salesChart = new Chart(salesCtx, {
+            flowChartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    labels: ['8 AM', '9 AM', '10 AM', '11 AM', '12 PM', '1 PM', '2 PM', 'Now'],
                     datasets: [{
-                        label: 'Sales (kg/L)',
-                        data: [12, 19, 8, 15, 22, 18, 25],
-                        backgroundColor: 'rgba(67, 97, 238, 0.2)',
-                        borderColor: '#4361ee',
-                        borderWidth: 2,
-                        tension: 0.3,
-                        fill: true
+                        label: 'Citizens Served',
+                        data: [12, 25, 45, 60, 40, 80, 110, 142],
+                        borderColor: '#58a6ff',
+                        backgroundColor: gradient,
+                        borderWidth: 3,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#58a6ff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        fill: true,
+                        tension: 0.4 // Smooth curves
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: {
-                            position: 'top',
-                            labels: {
-                                font: {
-                                    size: 11
-                                }
-                            }
-                        }
+                        legend: { display: false }
                     },
                     scales: {
                         y: {
-                            beginAtZero: true,
-                            ticks: {
-                                font: {
-                                    size: 10
-                                }
-                            }
+                            grid: { color: 'rgba(255,255,255,0.05)', drawBorder: false },
+                            ticks: { color: '#8b949e' }
                         },
                         x: {
-                            ticks: {
-                                font: {
-                                    size: 10
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-        
-        // Initialize Grains Detail Chart
-        function initGrainsDetailChart() {
-            const grainsDetailCtx = document.getElementById('grainsDetailChart').getContext('2d');
-            const grainsDetailChart = new Chart(grainsDetailCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['White Rice', 'Parboiled Rice', 'Wheat'],
-                    datasets: [{
-                        label: 'Stock (kg)',
-                        data: [5, 5, 5],
-                        backgroundColor: '#4361ee',
-                        borderWidth: 0,
-                        borderRadius: 5
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            labels: {
-                                font: {
-                                    size: 11
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                font: {
-                                    size: 10
-                                }
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                font: {
-                                    size: 10
-                                }
-                            }
+                            grid: { display: false },
+                            ticks: { color: '#8b949e' }
                         }
                     }
                 }
             });
         }
 
-        // Initialize Liquid Detail Chart
-        function initLiquidDetailChart() {
-            const liquidDetailCtx = document.getElementById('liquidDetailChart').getContext('2d');
-            const liquidDetailChart = new Chart(liquidDetailCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['Edible Oil', 'Kerosene'],
-                    datasets: [{
-                        label: 'Stock (L)',
-                        data: [5, 5],
-                        backgroundColor: '#4cc9f0',
-                        borderWidth: 0,
-                        borderRadius: 5
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            labels: {
-                                font: {
-                                    size: 11
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                font: {
-                                    size: 10
-                                }
-                            }
-                        },
-                        x: {
-                            ticks: {
-                                font: {
-                                    size: 10
-                                }
-                            }
-                        }
-                    }
-                }
-            });
+        // --- LIVE SIMULATION ENGINE ---
+        let currentTokenNum = 143;
+        let totalServed = 142;
+
+        function nextToken() {
+            currentTokenNum++;
+            totalServed++;
+            updateQueueDisplay();
+            addFeedItem(`Token T-${currentTokenNum-1} completed successfully.`);
+        }
+
+        function skipToken() {
+            currentTokenNum++;
+            updateQueueDisplay();
+            addFeedItem(`Token T-${currentTokenNum-1} skipped (No-show).`, 'warning');
+        }
+
+        function updateQueueDisplay() {
+            // Animate number change
+            const display = document.getElementById('queueTokenDisplay');
+            display.style.opacity = 0;
+            setTimeout(() => {
+                display.innerText = `T-${currentTokenNum}`;
+                display.style.opacity = 1;
+            }, 200);
+
+            // Update Dash metric
+            document.getElementById('dashServed').innerText = totalServed;
+
+            // Update list (shift items)
+            const list = document.getElementById('queueList');
+            if(list.children.length > 0) {
+                list.removeChild(list.firstElementChild);
+            }
+            // Add new one at bottom
+            const newT = currentTokenNum + 4;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>T-${newT}</td><td><span class="status-badge bg-glow-success">Standard</span></td><td>15 min</td><td>Waiting</td>`;
+            list.appendChild(tr);
+        }
+
+        const actions = ["Dispersed 5kg Rice", "Authenticated Aadhaar", "Dispersed 2L Oil", "Token Verified"];
+        function startLiveSimulation() {
+            setInterval(() => {
+                const randomAction = actions[Math.floor(Math.random() * actions.length)];
+                addFeedItem(randomAction);
+            }, 5000); // add item every 5 seconds
+        }
+
+        function addFeedItem(text, type='success') {
+            const feed = document.getElementById('liveFeed');
+            const icon = type === 'success' ? '<i class="fas fa-check"></i>' : '<i class="fas fa-exclamation text-warning"></i>';
+            const colorClass = type === 'success' ? '' : 'border-warning';
+            
+            const html = `
+                <div class="feed-item">
+                    <div class="feed-icon ${colorClass}">${icon}</div>
+                    <div>
+                        <div class="fw-bold text-white mb-1">${text}</div>
+                        <div class="text-muted small">Just now</div>
+                    </div>
+                </div>
+            `;
+            feed.insertAdjacentHTML('afterbegin', html);
+            
+            // Keep only top 5
+            if(feed.children.length > 5) {
+                feed.removeChild(feed.lastElementChild);
+            }
         }
     </script>
 </body>
 </html>
-
