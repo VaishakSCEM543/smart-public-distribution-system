@@ -4,65 +4,82 @@
 [![Firebase](https://img.shields.io/badge/Firebase-Realtime_Sync-FFCA28?style=for-the-badge&logo=firebase&logoColor=white)](https://firebase.google.com/)
 [![AI](https://img.shields.io/badge/AI-Fraud_Analyst-blue?style=for-the-badge&logo=robot&logoColor=white)](https://x.ai)
 
-India’s Public Distribution System (PDS) is one of the **largest food security networks in the world**, serving **over 800 million beneficiaries** every month. Even small inefficiencies lead to significant economic and social consequences. Government audits estimate that **20–30% of subsidized food grains** are lost annually due to diversion, pilferage, and manual inefficiencies.
+India’s Public Distribution System (PDS) is one of the **largest food security networks in the world**, serving **over 800 million beneficiaries**. Despite large-scale digitization of records, **20–30% of subsidized food grains** are still lost annually due to physical diversion, pilferage, and manual weighing inefficiencies at the point of delivery.
 
-**Smart PDS** proposes a **cyber-physical, vending-machine–based ration distribution system** that automates dispensing at fair price shops. Combined with a **Real-Time Web Dashboard powered by AI Fraud Detection**, it aims to eliminate leakage and improve transparency in public welfare distribution.
+**Smart PDS** solves this by introducing a **Cyber-Physical Ecosystem** that combines a physical IoT-based automated vending machine with a cloud-connected web platform. By physically automating the dispensing and enforcing closed-loop load-cell feedback, it mathematically prevents over-dispensing and diversion at the source.
 
 👉 **[Try the Live Web Portals Here!](https://vaishakscem543.github.io/smart-public-distribution-system/)**
 
 ---
 
-## 🌟 Key Features (Web Portals v3.5)
+## 🧠 System Architecture
 
-The Smart PDS ecosystem includes three distinct role-based web portals, recently upgraded with live data synchronization and AI capabilities:
+The project bridges embedded hardware and modern web technologies to create a tamper-proof pipeline from physical grain to digital audit log.
+
+```mermaid
+graph TD
+    subgraph "Hardware Layer (Dispenser Unit)"
+        K[4x3 Keypad] -->|OTP/Input| ESP[ESP32 Microcontroller]
+        ESP -->|Status/Weight| LCD[16x2 I2C LCD]
+        ESP -->|PWM Control| S(Servo Motor)
+        S -->|Dispenses| G((Grain Outlet))
+        L[HX711 + Load Cell] -->|Real-time Weight Feedback| ESP
+        IR[IR Sensor] -->|Flow Verification| ESP
+    end
+
+    subgraph "Cloud Layer (Backend)"
+        ESP <-->|WiFi / Secure API| FB[(Firebase Realtime Database)]
+    end
+
+    subgraph "Web Layer (Live Dashboards)"
+        FB <-->|Live Sync| AP[Authority Portal]
+        FB <-->|Live Sync| SP[Shop Owner Portal]
+        FB <-->|Live Sync| CP[Customer Portal]
+        AP <-->|Fraud Context| AI(Grok AI Agent)
+    end
+```
+
+---
+
+## 🛠️ Hardware & Firmware Implementation
+
+The physical vending unit is built to be robust, accurate, and cost-effective for deployment at local Fair Price Shops (FPS).
+
+* **Microcontroller:** **ESP32** handles all processing, WiFi connectivity (via `WiFiManager`), and secure JSON communication with Firebase.
+* **Weight Verification:** A **Load Cell + HX711 Amplifier** creates a closed-loop system. The servo motor stops dispensing exactly when the target weight is reached.
+* **User Interface:** A **16x2 I2C LCD Display** combined with a **4x3 Matrix Keypad** allows beneficiaries to input their OTP/authentication details and select commodities.
+* **Dispensing Mechanism:** A **Servo Motor** opens and closes the mechanical grain outlet, backed by an **IR Sensor** to verify actual physical flow.
+* **Firmware:** Written in **C++ / Arduino IDE**, featuring offline caching, fault handling, and real-time syncing.
+
+---
+
+## 🌐 Software & Web Ecosystem (v3.5)
+
+The software stack manages the logistics, queues, and security, utilizing three role-based portals connected via Firebase.
 
 ### 🛡️ Authority Portal (Admin Dashboard)
 - **Real-Time Monitoring:** Live tracking of all registered shops with dynamic Firebase data sync.
-- **AI Fraud Analyst:** An integrated AI chatbot (powered by Grok) that analyzes live shop data, detects anomalies, and generates risk assessment reports. *(Includes a smart demo-mode fallback).*
-- **Dynamic Analytics & Charts:** Live visual representation of stock distribution, commodity breakdown, and prediction accuracy using Chart.js.
-- **Alert Management System:** Automated warnings and critical alerts for stock discrepancies with resolution workflows.
-- **Export & Reporting:** Generate and download comprehensive CSV audit logs, map data, and transaction reports.
+- **AI Fraud Analyst:** An integrated AI chatbot (powered by Grok) that analyzes live shop data, detects weight anomalies, and generates risk assessment reports. *(Includes a smart demo-mode fallback for the public live link).*
+- **Dynamic Analytics & Charts:** Live visual representation of stock distribution and anomaly detection using `Chart.js`.
+- **Export & Audit:** Generate and download comprehensive CSV audit logs, map data, and transaction reports.
+
+### 🏪 Shop Owner Portal
+- FPS owner dashboard for inventory management.
+- Live queue system to prevent crowding at the shop.
+- Transaction logging and daily operations management.
 
 ### 👥 Customer Portal
 - Beneficiary-facing portal to view monthly allocations.
 - Digital queue system & slot booking.
-- Real-time stock status tracking at local Fair Price Shops.
-
-### 🏪 Shop Owner Portal
-- FPS owner dashboard for inventory management.
-- Transaction logging and daily operations management.
-- Automated queue control.
+- Real-time stock status tracking before visiting the shop.
 
 ---
 
-## 🧠 System Architecture
+## 🔐 Security & Data Integrity
 
-<img width="817" height="518" alt="system-architecture" src="https://github.com/user-attachments/assets/daca8789-0c45-4339-847b-da3438277a95" />
-
-The system follows a **four-layer architecture**:
-
-### 1️⃣ Hardware Layer
-- **ESP32-based** control unit.
-- **Load cell with HX711** for precise weight measurement.
-- Servo-controlled dispensing mechanism.
-- IR sensor for dispense verification.
-- OLED display and keypad for user interaction.
-> *Dispensing is **sensor-verified**, not time-based.*
-
-### 2️⃣ Embedded Firmware Layer (C++)
-- Authentication validation (Biometric / OTP / QR).
-- Entitlement verification & closed-loop dispensing control.
-- Offline transaction caching and error handling.
-
-### 3️⃣ Cloud & Backend Layer
-- **Firebase Realtime Database & Firestore**.
-- Secure storage of beneficiary data, transaction logs, and inventory status.
-- Enables the real-time dynamic updates seen across all web portals.
-
-### 4️⃣ Security & Data Encryption
-- Sensitive data is **encrypted using AES** before cloud storage.
-- **Role-based access control** ensures stakeholders only see relevant data.
-- Secure HTTPS (TLS) connections and Firebase security rules.
+- **Sensor-Verified, Not Time-Based:** Dispensing relies purely on load-cell feedback, meaning physical tampering with the flow rate will not cheat the system.
+- **Encrypted Transmission:** ESP32 to Firebase communication occurs over HTTPS (TLS).
+- **Role-Based Access Control (RBAC):** Firebase Security Rules ensure beneficiaries only see their own data, while only Authorities can view global analytics.
 
 ---
 
@@ -79,21 +96,17 @@ The system follows a **four-layer architecture**:
 
 ---
 
-## 🛠️ Technologies Used
+## 📂 Repository Structure
 
-- **Web Stack:** HTML5, Vanilla JavaScript, Bootstrap 5, CSS3 Glassmorphism
-- **Cloud & Database:** Firebase (Auth, Realtime Database)
-- **AI & Analytics:** Grok API integration, Chart.js, Leaflet.js
-- **Hardware:** ESP32, Load Cell, Servo, Arduino IDE / C++
-
----
-
-## 🚀 Future Scope
-
-- District- and state-level massive deployment tracking.
-- Advanced predictive modeling for inventory forecasting and demand.
-- Native mobile application integration for beneficiaries.
-- Integration with national identity (Aadhaar) and welfare platforms.
+```text
+smart-public-distribution-system/
+├── docs/          # Project documentation
+├── hardware/      # Component lists and prototype photos
+├── firmware/      # ESP32 C++ source code (WiFi, LCD, HX711, Firebase)
+├── web/           # Source code for the 3 web portals (HTML/JS/CSS)
+├── demo/          # Screenshots and demo material
+└── index.html     # Public landing page for GitHub Pages deployment
+```
 
 ---
 
