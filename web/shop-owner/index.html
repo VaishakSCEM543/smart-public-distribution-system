@@ -43,55 +43,88 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: url('https://images.unsplash.com/photo-1556761175-b413da4baf72?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1374&q=80') no-repeat center center;
+            background: linear-gradient(rgba(10, 14, 39, 0.7), rgba(10, 14, 39, 0.8)), url('https://images.unsplash.com/photo-1578916171728-46686eac8d58?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') no-repeat center center;
             background-size: cover;
+            position: relative;
         }
         
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
+            pointer-events: none;
+        }
+
         .login-card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.3);
             width: 100%;
-            max-width: 380px;
+            max-width: 420px;
             overflow: hidden;
+            position: relative;
+            z-index: 1;
+            color: white;
         }
         
         .login-header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 20px;
+            background: rgba(67, 97, 238, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px 20px 20px;
             text-align: center;
         }
         
         .login-body {
-            padding: 20px;
+            padding: 30px;
         }
         
-        .form-control {
-            padding: 10px 12px;
-            border-radius: 6px;
-            margin-bottom: 15px;
-            border: 2px solid #e2e8f0;
-            font-size: 0.9rem;
+        .login-body .form-label {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        .login-body .form-control {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
         }
         
-        .form-control:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        .login-body .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .login-body .form-control:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(67, 97, 238, 0.5);
+            box-shadow: 0 0 15px rgba(67, 97, 238, 0.2);
+            color: white;
         }
         
-        .btn-primary {
+        .login-body .btn-primary {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             border: none;
-            padding: 10px;
-            border-radius: 6px;
+            padding: 12px;
+            border-radius: 8px;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
         }
         
-        .btn-primary:hover {
+        .login-body .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.4);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
         }
         
         .dashboard-container {
@@ -488,25 +521,46 @@
     <div class="login-container" id="loginSection">
         <div class="login-card">
             <div class="login-header">
-                <h2 style="font-size: 1.5rem;"><i class="fas fa-store me-2"></i>Smart PDS</h2>
-                <p class="mb-0" style="font-size: 0.9rem;">Shop Owner Portal</p>
+                <div style="width: 60px; height: 60px; background: rgba(255,255,255,0.1); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 1.8rem;">
+                    <i class="fas fa-store-alt text-white"></i>
+                </div>
+                <h2 style="font-size: 1.6rem; font-weight: 700; margin-bottom: 5px;">Smart PDS</h2>
+                <p class="mb-0" style="font-size: 0.85rem; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 1.5px;">Shop Owner Portal</p>
             </div>
             <div class="login-body">
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email Address</label>
-                    <input type="email" class="form-control" id="email" placeholder="Enter your email">
+                <div class="mb-3 position-relative">
+                    <label for="email" class="form-label">Shop License / Email</label>
+                    <div class="input-group">
+                        <span class="input-group-text" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-right: none; color: rgba(255,255,255,0.5);"><i class="fas fa-id-badge"></i></span>
+                        <input type="email" class="form-control m-0 border-start-0" id="email" placeholder="owner@shop.com">
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" class="form-control" id="password" placeholder="Enter your password">
+                <div class="mb-4 position-relative">
+                    <label for="password" class="form-label">Security Key</label>
+                    <div class="input-group">
+                        <span class="input-group-text" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-right: none; color: rgba(255,255,255,0.5);"><i class="fas fa-key"></i></span>
+                        <input type="password" class="form-control m-0 border-start-0" id="password" placeholder="Enter security key">
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-4" style="font-size: 0.85rem;">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="rememberMe" style="background-color: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2);">
+                        <label class="form-check-label text-white-50" for="rememberMe">Remember shop</label>
+                    </div>
+                    <a href="#" class="text-white-50 text-decoration-none">Recover Access</a>
                 </div>
                 <div class="loading" id="loginLoading">
                     <div class="loading-spinner"></div>
-                    <p class="mt-2" style="font-size: 0.9rem;">Logging in...</p>
+                    <p class="mt-2 text-white-50" style="font-size: 0.9rem;">Verifying License...</p>
                 </div>
                 <button class="btn btn-primary w-100" id="loginBtn">
-                    <i class="fas fa-sign-in-alt me-2"></i>Login
+                    <i class="fas fa-lock-open me-2"></i>Open Terminal
                 </button>
+                <div class="text-center mt-3">
+                    <button class="btn btn-sm text-white-50 text-decoration-underline" style="font-size: 0.8rem;" onclick="document.getElementById('email').value='owner@shop.com';document.getElementById('password').value='demo123';document.getElementById('loginBtn').click();">
+                        <i class="fas fa-bolt me-1"></i> Quick Demo Access
+                    </button>
+                </div>
             </div>
         </div>
     </div>
