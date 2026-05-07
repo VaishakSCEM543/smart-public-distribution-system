@@ -10,9 +10,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Firebase App & Auth -->
+    <!-- Firebase App, Auth & Database -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
     <style>
         :root {
@@ -595,8 +596,29 @@
         </main>
     </div>
 
-    <!-- Simulation Script -->
+    <!-- Core Firebase and App Script -->
     <script>
+        // --- FIREBASE INITIALIZATION ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyD8tOpjuDF1Xq_3DxNSgkU4dYzE2pBI6mQ",
+            authDomain: "pdssytm.firebaseapp.com",
+            databaseURL: "https://pdssytm-default-rtdb.firebaseio.com",
+            projectId: "pdssytm",
+            storageBucket: "pdssytm.firebasestorage.app",
+            messagingSenderId: "197853991949",
+            appId: "1:197853991949:web:e73009920da00c4e98b144"
+        };
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const database = firebase.database();
+
+        // --- GLOBAL STATE ---
+        let currentQueue = [];
+        let servedTokens = [];
+        let currentTokenIndex = 0;
+        let totalServed = 0;
+
         // --- NAVIGATION & LOGIN ---
         function demoLogin() {
             document.getElementById('email').value = 'terminal-8921@smartpds.gov';
@@ -607,7 +629,7 @@
             document.getElementById('loginSection').style.display = 'none';
             document.getElementById('appSection').style.display = 'flex';
             initCharts();
-            startLiveSimulation();
+            startFirebaseListeners();
         }
 
         function logout() {
@@ -616,11 +638,9 @@
         }
 
         function switchView(viewId, element) {
-            // Update nav active state
             document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
             element.classList.add('active');
 
-            // Update title
             const titles = {
                 'dashboard': 'Command Center',
                 'queue': 'Queue Management',
@@ -628,23 +648,135 @@
             };
             document.getElementById('pageTitle').innerText = titles[viewId];
 
-            // Switch views
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.getElementById('view-' + viewId).classList.add('active');
         }
 
-        // --- CLOCK ---
         setInterval(() => {
             document.getElementById('clock').innerText = new Date().toLocaleTimeString();
         }, 1000);
+
+        // --- FIREBASE REALTIME ENGINE ---
+        function startFirebaseListeners() {
+            // Listen to Queue
+            database.ref('queue/current').on('value', (snapshot) => {
+                const rawQueue = snapshot.exists() ? snapshot.val() : {};
+                currentQueue = Array.isArray(rawQueue) ? rawQueue : Object.values(rawQueue);
+                updateQueueUI();
+            });
+
+            // Listen to Served Tokens
+            const today = new Date().toISOString().split('T')[0];
+            database.ref(`servedTokens/${today}`).on('value', (snapshot) => {
+                servedTokens = snapshot.exists() ? Object.values(snapshot.val()) : [];
+                totalServed = servedTokens.length;
+                document.getElementById('dashServed').innerText = totalServed;
+            });
+
+            // Listen to transactions for live feed
+            database.ref('transactions').orderByChild('timestamp').limitToLast(5).on('value', (snapshot) => {
+                if(snapshot.exists()){
+                    const txs = snapshot.val();
+                    const keys = Object.keys(txs);
+                    const latestTx = txs[keys[keys.length - 1]];
+                    addFeedItem(`Dispersed ${latestTx.quantityDispensed || latestTx.quantity || 0} ${latestTx.category === 'Liquid' ? 'L' : 'kg'} of ${latestTx.item}`);
+                }
+            });
+        }
+
+        function updateQueueUI() {
+            // Update Active Token
+            const display = document.getElementById('queueTokenDisplay');
+            if (currentQueue.length > 0 && currentTokenIndex < currentQueue.length) {
+                display.innerText = currentQueue[currentTokenIndex].token;
+            } else {
+                display.innerText = "NO TOKEN";
+                display.style.fontSize = "3rem";
+            }
+
+            // Update List
+            const list = document.getElementById('queueList');
+            let html = '';
+            
+            // Only show tokens after current
+            for(let i = currentTokenIndex + 1; i < currentQueue.length; i++) {
+                const tokenObj = currentQueue[i];
+                const isPriority = tokenObj.priority && tokenObj.priority !== 'normal';
+                const typeHtml = isPriority ? `<span class="status-badge bg-glow-warning">Priority</span>` : `<span class="status-badge bg-glow-success">Standard</span>`;
+                const statusHtml = i === currentTokenIndex + 1 ? 'Up Next' : 'Waiting';
+                const waitTime = (i - currentTokenIndex) * 5;
+                
+                html += `<tr><td>${tokenObj.token}</td><td>${typeHtml}</td><td>${waitTime} min</td><td>${statusHtml}</td></tr>`;
+            }
+            list.innerHTML = html || '<tr><td colspan="4" class="text-center text-muted">No tokens in queue</td></tr>';
+        }
+
+        async function nextToken() {
+            if (currentQueue.length > 0 && currentTokenIndex < currentQueue.length) {
+                const completedToken = currentQueue[currentTokenIndex];
+                
+                // Add to served log
+                const today = new Date().toISOString().split('T')[0];
+                const servedTokenData = {
+                    ...completedToken,
+                    servedTime: Date.now(),
+                    servedBy: 'shop_owner'
+                };
+                await database.ref(`servedTokens/${today}/${completedToken.token}`).set(servedTokenData);
+
+                // Remove from queue
+                currentQueue.splice(currentTokenIndex, 1);
+                await database.ref('queue/current').set(currentQueue);
+                
+                addFeedItem(`Token ${completedToken.token} completed successfully.`);
+            }
+        }
+
+        async function skipToken() {
+            if (currentQueue.length > 0 && currentTokenIndex < currentQueue.length) {
+                const skippedToken = currentQueue[currentTokenIndex];
+                
+                const today = new Date().toISOString().split('T')[0];
+                const skippedData = {
+                    ...skippedToken,
+                    skippedTime: Date.now(),
+                    reason: 'manual_skip'
+                };
+                await database.ref(`skippedTokens/${today}/${skippedToken.token}`).set(skippedData);
+
+                // Advance index or remove it? The previous logic just advanced index:
+                // "if (this.currentTokenIndex < this.currentQueue.length - 1) { this.currentTokenIndex++; }"
+                // Let's remove it to keep queue clean.
+                currentQueue.splice(currentTokenIndex, 1);
+                await database.ref('queue/current').set(currentQueue);
+
+                addFeedItem(`Token ${skippedToken.token} skipped.`, 'warning');
+            }
+        }
+
+        function addFeedItem(text, type='success') {
+            const feed = document.getElementById('liveFeed');
+            const icon = type === 'success' ? '<i class="fas fa-check"></i>' : '<i class="fas fa-exclamation text-warning"></i>';
+            const colorClass = type === 'success' ? '' : 'border-warning';
+            
+            const html = `
+                <div class="feed-item">
+                    <div class="feed-icon ${colorClass}">${icon}</div>
+                    <div>
+                        <div class="fw-bold text-white mb-1">${text}</div>
+                        <div class="text-muted small">Just now</div>
+                    </div>
+                </div>
+            `;
+            feed.insertAdjacentHTML('afterbegin', html);
+            if(feed.children.length > 5) feed.removeChild(feed.lastElementChild);
+        }
 
         // --- CHARTS ---
         let flowChartInstance = null;
         function initCharts() {
             if(flowChartInstance) return;
             const ctx = document.getElementById('flowChart').getContext('2d');
-            
-            // Create gradient
             let gradient = ctx.createLinearGradient(0, 0, 0, 400);
             gradient.addColorStop(0, 'rgba(88, 166, 255, 0.5)');
             gradient.addColorStop(1, 'rgba(88, 166, 255, 0.0)');
@@ -664,98 +796,19 @@
                         pointBorderWidth: 2,
                         pointRadius: 4,
                         fill: true,
-                        tension: 0.4 // Smooth curves
+                        tension: 0.4
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }
-                    },
+                    plugins: { legend: { display: false } },
                     scales: {
-                        y: {
-                            grid: { color: 'rgba(255,255,255,0.05)', drawBorder: false },
-                            ticks: { color: '#8b949e' }
-                        },
-                        x: {
-                            grid: { display: false },
-                            ticks: { color: '#8b949e' }
-                        }
+                        y: { grid: { color: 'rgba(255,255,255,0.05)', drawBorder: false }, ticks: { color: '#8b949e' } },
+                        x: { grid: { display: false }, ticks: { color: '#8b949e' } }
                     }
                 }
             });
-        }
-
-        // --- LIVE SIMULATION ENGINE ---
-        let currentTokenNum = 143;
-        let totalServed = 142;
-
-        function nextToken() {
-            currentTokenNum++;
-            totalServed++;
-            updateQueueDisplay();
-            addFeedItem(`Token T-${currentTokenNum-1} completed successfully.`);
-        }
-
-        function skipToken() {
-            currentTokenNum++;
-            updateQueueDisplay();
-            addFeedItem(`Token T-${currentTokenNum-1} skipped (No-show).`, 'warning');
-        }
-
-        function updateQueueDisplay() {
-            // Animate number change
-            const display = document.getElementById('queueTokenDisplay');
-            display.style.opacity = 0;
-            setTimeout(() => {
-                display.innerText = `T-${currentTokenNum}`;
-                display.style.opacity = 1;
-            }, 200);
-
-            // Update Dash metric
-            document.getElementById('dashServed').innerText = totalServed;
-
-            // Update list (shift items)
-            const list = document.getElementById('queueList');
-            if(list.children.length > 0) {
-                list.removeChild(list.firstElementChild);
-            }
-            // Add new one at bottom
-            const newT = currentTokenNum + 4;
-            const tr = document.createElement('tr');
-            tr.innerHTML = `<td>T-${newT}</td><td><span class="status-badge bg-glow-success">Standard</span></td><td>15 min</td><td>Waiting</td>`;
-            list.appendChild(tr);
-        }
-
-        const actions = ["Dispersed 5kg Rice", "Authenticated Aadhaar", "Dispersed 2L Oil", "Token Verified"];
-        function startLiveSimulation() {
-            setInterval(() => {
-                const randomAction = actions[Math.floor(Math.random() * actions.length)];
-                addFeedItem(randomAction);
-            }, 5000); // add item every 5 seconds
-        }
-
-        function addFeedItem(text, type='success') {
-            const feed = document.getElementById('liveFeed');
-            const icon = type === 'success' ? '<i class="fas fa-check"></i>' : '<i class="fas fa-exclamation text-warning"></i>';
-            const colorClass = type === 'success' ? '' : 'border-warning';
-            
-            const html = `
-                <div class="feed-item">
-                    <div class="feed-icon ${colorClass}">${icon}</div>
-                    <div>
-                        <div class="fw-bold text-white mb-1">${text}</div>
-                        <div class="text-muted small">Just now</div>
-                    </div>
-                </div>
-            `;
-            feed.insertAdjacentHTML('afterbegin', html);
-            
-            // Keep only top 5
-            if(feed.children.length > 5) {
-                feed.removeChild(feed.lastElementChild);
-            }
         }
     </script>
 </body>
