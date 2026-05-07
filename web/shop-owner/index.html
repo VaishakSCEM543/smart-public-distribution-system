@@ -30,11 +30,11 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.92));
+            background: linear-gradient(135deg, #0f111a 0%, #1a1d2d 100%);
             min-height: 100vh;
             margin: 0;
             padding: 0;
-            color: var(--dark);
+            color: #e2e8f0;
             font-size: 0.9rem;
         }
         
@@ -129,40 +129,54 @@
         
         .dashboard-container {
             display: none;
-            padding: 15px;
+            padding: 20px 15px;
+            min-height: 100vh;
         }
         
         .navbar {
-            background: white;
-            border-radius: 12px;
-            padding: 12px 15px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            margin-bottom: 15px;
+            background: rgba(15, 17, 26, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 15px 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            margin-bottom: 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: sticky;
+            top: 15px;
+            z-index: 100;
         }
         
         .card {
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s, box-shadow 0.3s;
-            margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            margin-bottom: 20px;
+            color: #e2e8f0;
         }
         
         .card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+            border-color: rgba(67, 97, 238, 0.3);
         }
         
         .card-header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: transparent;
             color: white;
-            border-radius: 12px 12px 0 0 !important;
-            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px 16px 0 0 !important;
+            padding: 18px 20px;
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 1.05rem;
+            letter-spacing: 0.5px;
         }
         
         .stat-card {
@@ -194,35 +208,45 @@
         }
         
         .dropdown-menu {
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            background: #1a1d2d;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 8px;
             font-size: 0.9rem;
             z-index: 1050 !important;
         }
         
         .dropdown-item {
-            border-radius: 5px;
-            padding: 8px 12px;
+            border-radius: 8px;
+            padding: 10px 15px;
             transition: all 0.2s;
-            margin: 3px 0;
+            margin: 2px 0;
             cursor: pointer;
             font-size: 0.9rem;
+            color: #e2e8f0;
         }
         
         .dropdown-item:hover {
-            background-color: var(--primary);
+            background-color: rgba(67, 97, 238, 0.2);
             color: white;
         }
         
         .logout-btn {
-            background: var(--accent);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 6px 12px;
+            background: rgba(255, 55, 87, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(255, 55, 87, 0.3);
+            border-radius: 8px;
+            padding: 8px 16px;
             font-size: 0.85rem;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .logout-btn:hover {
+            background: var(--danger);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 55, 87, 0.4);
         }
         
         .subcategory-page {
@@ -230,30 +254,37 @@
         }
         
         .back-btn {
-            background: var(--secondary);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 6px 12px;
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+            border: 1px solid rgba(67, 97, 238, 0.3);
+            border-radius: 8px;
+            padding: 8px 16px;
             font-size: 0.85rem;
             margin-bottom: 15px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: var(--primary);
+            color: white;
         }
         
         .detail-card {
-            background: white;
-            border-radius: 12px;
-            padding: 15px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
         }
         
         .detail-header {
             font-size: 1.2rem;
             font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #e2e8f0;
+            color: var(--success);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .loading {
@@ -406,24 +437,42 @@
             100% { opacity: 1; }
         }
         
+        .nav-tabs {
+            border-bottom: none;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 6px;
+            display: inline-flex;
+            margin-bottom: 25px;
+        }
+
         .nav-tabs .nav-link {
             border: none;
-            border-bottom: 3px solid transparent;
-            color: var(--dark);
-            font-weight: 500;
-            padding: 10px 15px;
+            border-radius: 8px;
+            color: #94a3b8;
+            font-weight: 600;
+            padding: 12px 20px;
+            margin-right: 5px;
+            transition: all 0.3s ease;
         }
         
+        .nav-tabs .nav-link:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
         .nav-tabs .nav-link.active {
-            border-bottom: 3px solid var(--primary);
-            color: var(--primary);
-            background: transparent;
+            background: rgba(67, 97, 238, 0.2);
+            color: #4cc9f0;
+            border: 1px solid rgba(67, 97, 238, 0.3);
+            box-shadow: inset 0 0 15px rgba(67, 97, 238, 0.1);
         }
         
         .stock-bar {
             height: 8px;
             border-radius: 4px;
-            background: #e9ecef;
+            background: rgba(255,255,255,0.1);
             margin-top: 5px;
             overflow: hidden;
         }
@@ -434,58 +483,59 @@
             background: var(--primary);
         }
         
-        .stock-low {
-            background: var(--danger);
-        }
-        
-        .stock-medium {
-            background: var(--warning);
-        }
-        
-        .stock-high {
-            background: var(--success);
-        }
+        .stock-low { background: var(--danger); box-shadow: 0 0 10px var(--danger); }
+        .stock-medium { background: var(--warning); box-shadow: 0 0 10px var(--warning); }
+        .stock-high { background: var(--success); box-shadow: 0 0 10px var(--success); }
         
         /* NEW QUEUE MANAGEMENT STYLES */
         .queue-management-card {
-            border: 3px solid var(--queue-primary);
-            background: linear-gradient(135deg, #f8fff8, #e8f5e8);
+            border: 1px solid rgba(76, 201, 240, 0.3);
+            background: linear-gradient(135deg, rgba(15, 17, 26, 0.8), rgba(10, 14, 39, 0.9));
         }
         
         .current-token {
-            background: linear-gradient(135deg, #ffeb3b, #ffc107);
-            color: #000;
-            font-weight: bold;
-            font-size: 2rem;
-            padding: 20px;
-            border-radius: 10px;
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: 900;
+            font-size: 4.5rem;
+            letter-spacing: 5px;
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid #0f0;
             text-align: center;
-            animation: pulse 2s infinite;
+            text-shadow: 0 0 20px #0f0, 0 0 40px #0f0;
+            box-shadow: inset 0 0 30px rgba(0, 255, 0, 0.2), 0 0 20px rgba(0, 255, 0, 0.2);
+            margin-bottom: 25px;
         }
         
         .token-item {
-            border-left: 4px solid var(--queue-primary);
+            border-left: 4px solid rgba(255,255,255,0.1);
             margin: 10px 0;
-            padding: 10px;
-            background: white;
-            border-radius: 5px;
+            padding: 15px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.05);
             transition: all 0.3s ease;
+            color: white;
         }
         
         .token-item:hover {
             transform: translateX(5px);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: rgba(255,255,255,0.05);
+            border-left-color: var(--primary);
         }
         
         .token-item.next {
             border-left-color: #ff9800;
-            background: #fff3e0;
+            background: rgba(255, 152, 0, 0.1);
+            border: 1px solid rgba(255, 152, 0, 0.3);
         }
         
         .token-item.completed {
             border-left-color: #4caf50;
-            background: #e8f5e9;
-            opacity: 0.7;
+            background: rgba(76, 175, 80, 0.05);
+            opacity: 0.5;
         }
         
         .priority-badge {
@@ -600,7 +650,7 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="card">
-                            <div class="card-header">Categories</div>
+                            <div class="card-header border-bottom border-secondary border-opacity-25">Categories</div>
                             <div class="card-body">
                                 <div class="dropdown category-dropdown">
                                     <button class="btn btn-primary dropdown-toggle w-100" type="button" id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -637,26 +687,26 @@
                         <div class="card">
                             <div class="card-header">Stock Information</div>
                             <div class="card-body">
-                                <ul class="list-group list-group-flush" id="stockList">
-                                    <li class="list-group-item d-flex justify-content-between align-items-center py-2">
+                                <ul class="list-group list-group-flush bg-transparent" id="stockList">
+                                    <li class="list-group-item bg-transparent text-light d-flex justify-content-between align-items-center py-3 border-bottom border-secondary border-opacity-25">
                                         White Rice
-                                        <span class="badge bg-primary rounded-pill">5 kg</span>
+                                        <span class="badge bg-primary bg-opacity-25 text-primary rounded-pill px-3 py-2">5 kg</span>
                                     </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center py-2">
+                                    <li class="list-group-item bg-transparent text-light d-flex justify-content-between align-items-center py-3 border-bottom border-secondary border-opacity-25">
                                         Parboiled Rice
-                                        <span class="badge bg-primary rounded-pill">5 kg</span>
+                                        <span class="badge bg-primary bg-opacity-25 text-primary rounded-pill px-3 py-2">5 kg</span>
                                     </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center py-2">
+                                    <li class="list-group-item bg-transparent text-light d-flex justify-content-between align-items-center py-3 border-bottom border-secondary border-opacity-25">
                                         Wheat
-                                        <span class="badge bg-primary rounded-pill">5 kg</span>
+                                        <span class="badge bg-primary bg-opacity-25 text-primary rounded-pill px-3 py-2">5 kg</span>
                                     </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center py-2">
+                                    <li class="list-group-item bg-transparent text-light d-flex justify-content-between align-items-center py-3 border-bottom border-secondary border-opacity-25">
                                         Edible Oil
-                                        <span class="badge bg-primary rounded-pill">5 L</span>
+                                        <span class="badge bg-primary bg-opacity-25 text-primary rounded-pill px-3 py-2">5 L</span>
                                     </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center py-2">
+                                    <li class="list-group-item bg-transparent text-light d-flex justify-content-between align-items-center py-3">
                                         Kerosene
-                                        <span class="badge bg-primary rounded-pill">5 L</span>
+                                        <span class="badge bg-primary bg-opacity-25 text-primary rounded-pill px-3 py-2">5 L</span>
                                     </li>
                                 </ul>
                             </div>
