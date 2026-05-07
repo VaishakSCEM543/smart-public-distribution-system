@@ -73,17 +73,23 @@
         }
 
         .login-card .form-control {
-            background: rgba(0,0,0,0.2);
-            border: 1px solid var(--border-subtle);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: white;
-            padding: 12px 16px;
+            padding: 14px 18px;
             border-radius: 12px;
+            font-size: 1rem;
         }
         
         .login-card .form-control:focus {
-            background: rgba(0,0,0,0.4);
+            background: rgba(255, 255, 255, 0.1);
             border-color: var(--primary);
             box-shadow: 0 0 0 3px var(--primary-glow);
+            color: white;
+        }
+
+        .login-card .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.4);
         }
 
         .btn-glass {
@@ -386,11 +392,19 @@
             <h2 style="font-weight: 800; color: white; margin-bottom: 5px;">Smart PDS</h2>
             <p style="color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; margin-bottom: 30px;">Terminal Access</p>
             
-            <div class="mb-3 text-start">
-                <input type="email" class="form-control" id="email" placeholder="Terminal ID">
+            <div class="mb-3 text-start position-relative">
+                <label for="email" class="form-label text-white-50 small mb-1">Terminal ID</label>
+                <div class="input-group">
+                    <span class="input-group-text border-end-0" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--primary);"><i class="fas fa-desktop"></i></span>
+                    <input type="email" class="form-control m-0 border-start-0" id="email" placeholder="Enter Terminal ID">
+                </div>
             </div>
-            <div class="mb-4 text-start">
-                <input type="password" class="form-control" id="password" placeholder="Security Key">
+            <div class="mb-4 text-start position-relative">
+                <label for="password" class="form-label text-white-50 small mb-1">Security Key</label>
+                <div class="input-group">
+                    <span class="input-group-text border-end-0" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--primary);"><i class="fas fa-key"></i></span>
+                    <input type="password" class="form-control m-0 border-start-0" id="password" placeholder="Enter Security Key">
+                </div>
             </div>
             
             <button class="btn-glass w-100 mb-3" id="loginBtn" onclick="doLogin()">
