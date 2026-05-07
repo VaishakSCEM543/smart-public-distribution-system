@@ -444,39 +444,7 @@
             overflow: hidden;
         }
         
-        .token-card::before {
-            content: '';
-            position: absolute;
-            left: -15px;
-            top: 55%;
-            width: 30px;
-            height: 30px;
-            background: #f4f7fa;
-            border-radius: 50%;
-            z-index: 2;
-        }
-        
-        .token-card::after {
-            content: '';
-            position: absolute;
-            right: -15px;
-            top: 55%;
-            width: 30px;
-            height: 30px;
-            background: #f4f7fa;
-            border-radius: 50%;
-            z-index: 2;
-        }
-
-        .token-divider {
-            position: absolute;
-            top: 55%;
-            left: 15px;
-            right: 15px;
-            height: 0;
-            border-top: 2px dashed rgba(255,255,255,0.2);
-            margin-top: 15px;
-        }
+        /* End of token-card pseudo-elements */
         
         .token-card .card-header {
             background: transparent;
@@ -643,18 +611,10 @@
             <div class="tab-pane fade show active" id="overview" role="tabpanel">
                 <div class="row">
                     <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-header">Categories</div>
-                            <div class="card-body">
-                                <div class="dropdown category-dropdown">
-                                    <button class="btn btn-primary dropdown-toggle w-100" type="button" id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Select Category
-                                    </button>
-                                    <ul class="dropdown-menu w-100" aria-labelledby="categoryDropdown">
-                                        <li><a class="dropdown-item category-option" href="#" data-category="rice">Rice</a></li>
-                                        <li><a class="dropdown-item category-option" href="#" data-category="wheat">Wheat</a></li>
-                                    </ul>
-                                </div>
+                        <div class="card border-0 bg-transparent shadow-none mb-4 p-0">
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-primary flex-grow-1 rounded-pill category-option" data-category="rice" style="padding: 12px; font-weight: 600; box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);"><i class="fas fa-seedling me-2"></i>Rice</button>
+                                <button class="btn bg-white flex-grow-1 rounded-pill category-option" data-category="wheat" style="padding: 12px; font-weight: 600; border: 1px solid rgba(0,0,0,0.1); color: #495057;"><i class="fas fa-wheat-awn me-2"></i>Wheat</button>
                             </div>
                         </div>
                         
@@ -811,24 +771,35 @@
                     <!-- Right Column: Token Display and Instructions -->
                     <div class="col-md-6">
                         <!-- Digital Token Display -->
-                        <div class="card token-card p-2">
-                            <div class="token-divider"></div>
-                            <div class="card-header text-center">
-                                <h5 class="mb-0 text-white-50"><i class="fas fa-qrcode me-2"></i>SMART PDS PASS</h5>
-                            </div>
-                            <div class="card-body text-center" style="position: relative; z-index: 3;">
-                                <div id="tokenDisplay" class="mb-4">
-                                    <div class="display-3 fw-bold text-white mb-2" id="tokenNumber">T-000</div>
-                                    <div class="badge bg-secondary mb-4" id="tokenStatus">No active token</div>
-                                    <div id="tokenQR" class="my-3 p-3 bg-white rounded-3 d-inline-block shadow-sm"></div>
+                        <div class="card token-card p-0">
+                            <!-- Top Half -->
+                            <div class="p-4 text-center" style="position: relative; z-index: 3;">
+                                <div class="card-header px-0 pt-0 pb-3">
+                                    <h5 class="mb-0 text-white-50" style="font-size: 0.9rem; letter-spacing: 2px;"><i class="fas fa-qrcode me-2"></i>SMART PDS PASS</h5>
                                 </div>
+                                <div id="tokenDisplay">
+                                    <div class="fw-bold text-white mb-2" id="tokenNumber" style="font-size: clamp(2rem, 8vw, 3.5rem); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2;">T-000</div>
+                                    <div class="badge bg-secondary mb-2" id="tokenStatus">No active token</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Divider Area -->
+                            <div style="position: relative; height: 30px; margin: 0; padding: 0;">
+                                <div style="position: absolute; left: -15px; top: 0; width: 30px; height: 30px; background: #f4f7fa; border-radius: 50%; z-index: 2;"></div>
+                                <div style="position: absolute; right: -15px; top: 0; width: 30px; height: 30px; background: #f4f7fa; border-radius: 50%; z-index: 2;"></div>
+                                <div style="position: absolute; top: 15px; left: 15px; right: 15px; height: 0; border-top: 2px dashed rgba(255,255,255,0.2);"></div>
+                            </div>
+
+                            <!-- Bottom Half -->
+                            <div class="p-4 text-center" style="position: relative; z-index: 3;">
+                                <div id="tokenQR" class="mb-3 p-2 bg-white rounded-3 d-inline-block shadow-sm"></div>
                                 
                                 <div class="current-serving p-3 rounded mb-3" id="nextTokenInfo" style="display: none;">
                                     <h6 class="text-white mb-1">It's Your Turn!</h6>
                                     <div class="text-white-50 small">Please proceed to counter</div>
                                 </div>
                                 
-                                <div class="queue-position mt-4 pt-3">
+                                <div class="queue-position pt-2">
                                     <div class="fs-6 text-white-50 mb-1">Queue Position</div>
                                     <div class="fs-4 text-white fw-bold mb-2" id="queuePosition">-</div>
                                     <div class="estimated-time text-white-50"><i class="fas fa-clock me-1"></i> Wait: <span id="userWaitTime">-</span></div>
