@@ -253,41 +253,45 @@
         .trend-up { color: var(--success); }
         .trend-down { color: var(--danger); }
 
-        /* Queue Neon Counter */
+        /* Premium Token Display */
         .neon-counter-container {
-            background: #000;
-            border: 2px solid #000;
+            background: linear-gradient(135deg, rgba(88, 166, 255, 0.1), rgba(88, 166, 255, 0.02));
+            border: 1px solid rgba(88, 166, 255, 0.2);
             border-radius: 24px;
             padding: 40px 20px;
             text-align: center;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            box-shadow: inset 0 0 20px rgba(88, 166, 255, 0.05), 0 20px 50px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
         }
 
         .neon-counter-container::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(63, 185, 80, 0.5), transparent);
+            top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
         }
 
         .neon-number {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 6rem;
-            font-weight: 900;
-            color: #0f0;
-            text-shadow: 0 0 10px #0f0, 0 0 20px #0f0, 0 0 40px #0f0;
-            letter-spacing: 4px;
+            font-family: system-ui, -apple-system, sans-serif;
+            font-size: clamp(2.5rem, 6vw, 4.5rem); /* Responsive sizing for long numbers */
+            font-weight: 800;
+            color: #ffffff;
+            text-shadow: 0 0 30px rgba(88, 166, 255, 0.5);
+            letter-spacing: 2px;
             margin: 0;
-            line-height: 1;
+            line-height: 1.2;
+            word-wrap: break-word;
+            word-break: break-all;
         }
 
         .neon-label {
-            color: rgba(255,255,255,0.5);
+            color: var(--primary);
             text-transform: uppercase;
             letter-spacing: 3px;
             font-size: 0.85rem;
+            font-weight: 600;
             margin-top: 15px;
         }
 
@@ -691,7 +695,6 @@
                 display.innerText = currentQueue[currentTokenIndex].token;
             } else {
                 display.innerText = "NO TOKEN";
-                display.style.fontSize = "3rem";
             }
 
             // Update List
