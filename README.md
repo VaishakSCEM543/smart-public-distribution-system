@@ -100,13 +100,40 @@ The software stack manages the logistics, queues, and security, utilizing three 
 
 ```text
 smart-public-distribution-system/
-├── docs/          # Project documentation
-├── hardware/      # Component lists and prototype photos
-├── firmware/      # ESP32 C++ source code (WiFi, LCD, HX711, Firebase)
-├── web/           # Source code for the 3 web portals (HTML/JS/CSS)
-├── demo/          # Screenshots and demo material
-└── index.html     # Public landing page for GitHub Pages deployment
+├── docs/               # Project documentation
+│   ├── api-reference.md       # Firebase data schema & API docs
+│   ├── future-scope.md        # Phased development roadmap
+│   ├── problem-statement.md   # Core problem definition
+│   ├── system-architecture.md # Architecture overview
+│   ├── workflow.md            # System workflow steps
+│   └── feasibility-and-impact.md
+├── hardware/           # Component lists and prototype photos
+├── firmware/           # ESP32 C++ source code (WiFi, LCD, HX711, Firebase)
+├── web/                # Source code for the 3 web portals (HTML/JS/CSS)
+│   ├── authority/      # Government admin dashboard
+│   ├── customer/       # Beneficiary portal
+│   └── shop-owner/     # FPS owner dashboard
+├── demo/               # Screenshots and demo material
+├── index.html          # Public landing page for GitHub Pages
+├── CHANGELOG.md        # Version history & release notes
+├── CONTRIBUTING.md     # Contribution guidelines & setup
+├── SECURITY.md         # Security policy & vulnerability reporting
+└── LICENSE             # MIT License
 ```
+
+---
+
+## 📚 Documentation
+
+| Document | Description |
+|----------|-------------|
+| [API Reference](docs/api-reference.md) | Firebase database schema, data types, and security rules |
+| [System Architecture](docs/system-architecture.md) | Layered architecture overview |
+| [Workflow](docs/workflow.md) | End-to-end dispensing workflow |
+| [Future Scope](docs/future-scope.md) | Phased development roadmap |
+| [Changelog](CHANGELOG.md) | Complete version history |
+| [Contributing](CONTRIBUTING.md) | How to set up and contribute |
+| [Security](SECURITY.md) | Security policy and responsible disclosure |
 
 ---
 
