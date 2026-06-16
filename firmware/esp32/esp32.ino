@@ -3,6 +3,12 @@
 #include "scale.h"
 #include "firebase.h"
 
+// How often (ms) to read weight and sync to Firebase
+#define SYNC_INTERVAL_MS 10000UL
+
+// Acceptable deviation from target weight before closing servo (grams)
+#define DISPENSE_TARGET_G 5000.0f
+
 unsigned long lastSend = 0;
 
 void setup() {
@@ -18,17 +24,29 @@ void setup() {
 void loop() {
     ensureWiFi();
 
-    if (millis() - lastSend > 10000) {
+    if (millis() - lastSend > SYNC_INTERVAL_MS) {
 
         float weight = readWeight();
 
+        // Build JSON payload for Firebase
         String json = "{";
         json += "\"weight\":\"" + String(weight) + " g\"";
         json += "}";
 
-        sendToFirebase("test_weight", json);
+        // Send to Firebase and reflect result on LCD
+        bool sent = sendToFirebase("test_weight", json);
 
-        showMessage("Weight:", String(weight) + " g");
+        if (sent) {
+            showMessage("Weight:", String(weight) + " g");
+        } else {
+            showError("Firebase Fail");
+        }
+
+        // Example: check if dispensed weight meets target
+        if (isWithinTolerance(weight, DISPENSE_TARGET_G)) {
+            showMessage("Dispense Done", String(weight) + "g OK");
+            retare();  // Re-zero scale for next user
+        }
 
         lastSend = millis();
     }
