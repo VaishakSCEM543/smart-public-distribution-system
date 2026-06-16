@@ -6,6 +6,34 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [v3.6.0] — 2026-06-17
+
+### Added
+- **`scale.cpp`:** `isWithinTolerance(dispensed, target)` — returns true if weight deviation is within the 5g acceptance window.
+- **`scale.cpp`:** `retare()` — re-zeros the load cell between sessions; useful after each successful dispense.
+- **`scale.cpp`:** `WEIGHT_ZERO_THRESHOLD` constant (2g) — clamps near-zero noisy readings to exactly 0.
+- **`display.cpp`:** `showError(msg)` — displays a prominent `"! ERROR !"` header on the LCD with the message on line 2.
+- **`display.cpp`:** `showStatus(msg)` — single-line status update helper for brief system state messages.
+- **`auth.cpp`:** OTP expiry timer — OTPs are now invalidated after 2 minutes automatically.
+- **`auth.cpp`:** 3-attempt lockout — after 3 incorrect OTP entries the session is locked.
+- **`auth.cpp`:** `AuthResult` enum — `AUTH_OK`, `AUTH_WRONG`, `AUTH_EXPIRED`, `AUTH_LOCKED` for structured error handling.
+- **`auth.cpp`:** `resetAuth()` — clears all OTP state after a session ends.
+- **`hardware/components-list.md`:** Full ESP32 GPIO wiring table for all components (HX711, servo, LCD, keypad, IR sensor) with power supply notes.
+- **`docs/system-architecture.md`:** Full architecture document with layer tables, firmware module breakdown, and end-to-end data flow diagram.
+- **`docs/workflow.md`:** Detailed 6-step dispensing workflow with firmware pseudocode, Firebase payload example, and error handling table.
+- **`docs/feasibility-and-impact.md`:** Complete feasibility study with component cost table, national ROI analysis, social impact breakdown, scalability plan, and risk mitigation table.
+
+### Fixed
+- **`wifi_manager.cpp`:** Replaced infinite `while(WiFi.status() != WL_CONNECTED)` loop with a bounded retry counter (20 attempts × 500ms). Prevents ESP32 hanging forever if the network is unavailable.
+- **`firebase.cpp`:** `sendToFirebase()` now returns `bool` instead of `void`. Added HTTP status code interpretation (401 Unauthorized, 400 Bad Request, network errors) and a WiFi connectivity guard before every request.
+- **`display.cpp`:** Added 16-character line clamping via `substring(0, 16)` to prevent LCD overflow and display corruption on long strings.
+
+### Changed
+- **`esp32.ino`:** Main loop now uses `showError()` on Firebase upload failure, `isWithinTolerance()` to detect dispense completion, and `retare()` after a successful session. Magic numbers replaced with named constants (`SYNC_INTERVAL_MS`, `DISPENSE_TARGET_G`).
+- **`scale.cpp`:** `readWeight()` now averages `WEIGHT_SAMPLES` (10) readings and applies zero-threshold clamping before returning.
+
+---
+
 ## [v3.5.0] — 2026-05-08
 
 ### Added
