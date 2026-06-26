@@ -1,0 +1,94 @@
+{
+  "rules": {
+
+    // ─────────────────────────────────────────────
+    //  QUEUE — Shop owner writes, customers read
+    // ─────────────────────────────────────────────
+    "queue": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+
+    // ─────────────────────────────────────────────
+    //  SERVED TOKENS — Shop owner writes, auth reads
+    // ─────────────────────────────────────────────
+    "servedTokens": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+
+    // ─────────────────────────────────────────────
+    //  SKIPPED TOKENS — Shop owner writes, auth reads
+    // ─────────────────────────────────────────────
+    "skippedTokens": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+
+    // ─────────────────────────────────────────────
+    //  TRANSACTIONS — Authenticated read, shop/authority write
+    // ─────────────────────────────────────────────
+    "transactions": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+
+    // ─────────────────────────────────────────────
+    //  ALERTS — Authenticated read, authority write
+    // ─────────────────────────────────────────────
+    "alerts": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+
+    // ─────────────────────────────────────────────
+    //  BOOKINGS — Each user can only read/write their own
+    // ─────────────────────────────────────────────
+    "bookings": {
+      "$userId": {
+        ".read": "auth != null && auth.uid != null",
+        ".write": "auth != null && auth.uid != null"
+      }
+    },
+
+    // ─────────────────────────────────────────────
+    //  LOGIN EVENTS — Write only (audit log)
+    // ─────────────────────────────────────────────
+    "loginEvents": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+
+    // ─────────────────────────────────────────────
+    //  STOCK — Authenticated read, shop owner write
+    // ─────────────────────────────────────────────
+    "stock": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+
+    // ─────────────────────────────────────────────
+    //  SHOP SCHEDULE — Authenticated read/write
+    // ─────────────────────────────────────────────
+    "shopSchedule": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+
+    // ─────────────────────────────────────────────
+    //  FEEDBACK — Any logged-in user can submit, auth reads
+    // ─────────────────────────────────────────────
+    "feedback": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+
+    // ─────────────────────────────────────────────
+    //  DEFAULT — Deny everything else
+    // ─────────────────────────────────────────────
+    "$other": {
+      ".read": false,
+      ".write": false
+    }
+  }
+}

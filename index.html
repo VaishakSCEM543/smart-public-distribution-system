@@ -3,162 +3,525 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart PDS - Public Distribution System</title>
-    <meta name="description" content="AI-Powered Smart Public Distribution System with real-time monitoring, fraud detection, and inventory management for India's PDS network.">
+
+    <!-- Primary Meta -->
+    <title>Smart PDS — AI-Powered Public Distribution System</title>
+    <meta name="description" content="Smart PDS is an AI-powered Public Distribution System featuring real-time fraud detection, fingerprint-based verification, live inventory management, and three role-based web portals — built for India's ration network.">
+    <meta name="author" content="Team UDBHAV — Vaishak S, SCEM">
+    <meta name="keywords" content="Smart PDS, Public Distribution System, Firebase, AI Fraud Detection, ESP32, Fingerprint, Ration Shop, India, IoT">
+
+    <!-- Open Graph — LinkedIn / Social Preview -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://vaishakscem543.github.io/smart-public-distribution-system/">
+    <meta property="og:title" content="Smart PDS — AI-Powered Public Distribution System">
+    <meta property="og:description" content="Next-generation IoT + AI platform for India's ration network. Real-time fraud detection, fingerprint verification, live Firebase sync across 3 role-based portals. Built with ESP32, Firebase & Vanilla JS.">
+    <meta property="og:image" content="https://vaishakscem543.github.io/smart-public-distribution-system/demo/og-preview.png">
+    <meta property="og:site_name" content="Smart PDS">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Smart PDS — AI-Powered Public Distribution System">
+    <meta name="twitter:description" content="IoT + AI platform for India's ration network with real-time fraud detection and Firebase sync.">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Libraries -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #0a0e27; color: #fff; min-height: 100vh; overflow-x: hidden; }
 
-        /* Animated background */
-        .bg-particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
-        .bg-particles::before, .bg-particles::after {
-            content: ''; position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.15;
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #060b1a;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
-        .bg-particles::before { width: 500px; height: 500px; background: #4361ee; top: -100px; left: -100px; animation: float1 15s infinite; }
-        .bg-particles::after { width: 400px; height: 400px; background: #7209b7; bottom: -100px; right: -100px; animation: float2 12s infinite; }
-        @keyframes float1 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(200px, 150px); } }
-        @keyframes float2 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-150px, -100px); } }
+
+        /* ─── Animated Background ─── */
+        .bg-orbs { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+        .bg-orbs::before {
+            content: ''; position: absolute; width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(67,97,238,0.18) 0%, transparent 70%);
+            top: -150px; left: -150px; animation: float1 18s ease-in-out infinite;
+        }
+        .bg-orbs::after {
+            content: ''; position: absolute; width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(114,9,183,0.15) 0%, transparent 70%);
+            bottom: -100px; right: -100px; animation: float2 14s ease-in-out infinite;
+        }
+        @keyframes float1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(220px,160px)} }
+        @keyframes float2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-160px,-110px)} }
+
+        /* Extra orb */
+        .bg-orb3 {
+            position: fixed; width: 300px; height: 300px; z-index: 0; pointer-events: none;
+            background: radial-gradient(circle, rgba(76,201,240,0.08) 0%, transparent 70%);
+            top: 50%; left: 50%; transform: translate(-50%,-50%);
+            animation: float3 22s ease-in-out infinite;
+        }
+        @keyframes float3 { 0%,100%{transform:translate(-50%,-50%) scale(1)} 50%{transform:translate(-50%,-50%) scale(1.4)} }
 
         .container-main { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; }
 
-        /* Hero Section */
-        .hero { text-align: center; padding: 80px 20px 40px; }
-        .hero-badge { display: inline-block; padding: 6px 16px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; background: rgba(67, 97, 238, 0.2); color: #4cc9f0; border: 1px solid rgba(67, 97, 238, 0.3); margin-bottom: 20px; letter-spacing: 1.5px; text-transform: uppercase; }
-        .hero h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 15px; background: linear-gradient(135deg, #fff, #4cc9f0, #4361ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1.1; }
-        .hero p { font-size: 1.1rem; color: rgba(255,255,255,0.6); max-width: 600px; margin: 0 auto 30px; line-height: 1.7; }
-        .hero-stats { display: flex; justify-content: center; gap: 40px; margin-top: 30px; }
-        .hero-stat { text-align: center; }
-        .hero-stat .num { font-size: 2rem; font-weight: 700; color: #4cc9f0; }
-        .hero-stat .label { font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-top: 4px; }
-
-        /* Portal Cards */
-        .portals { padding: 40px 20px 80px; max-width: 1100px; margin: 0 auto; width: 100%; }
-        .portals h2 { text-align: center; font-size: 1.6rem; font-weight: 600; margin-bottom: 40px; color: rgba(255,255,255,0.9); }
-        .portal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
-        .portal-card {
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px;
-            padding: 32px; transition: all 0.4s ease; cursor: pointer; text-decoration: none; color: #fff; position: relative; overflow: hidden;
+        /* ─── Navbar ─── */
+        .top-bar {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 20px 40px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
         }
-        .portal-card:hover { transform: translateY(-8px); border-color: rgba(67, 97, 238, 0.4); box-shadow: 0 20px 60px rgba(67, 97, 238, 0.15); color: #fff; }
-        .portal-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--card-color), transparent); opacity: 0; transition: opacity 0.3s; }
-        .portal-card:hover::before { opacity: 1; }
-        .card-icon { width: 56px; height: 56px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 20px; background: rgba(67, 97, 238, 0.15); color: var(--card-color); }
-        .portal-card h3 { font-size: 1.25rem; font-weight: 600; margin-bottom: 8px; }
-        .portal-card p { font-size: 0.85rem; color: rgba(255,255,255,0.5); line-height: 1.6; margin-bottom: 16px; }
+        .top-bar .brand {
+            font-size: 1.1rem; font-weight: 800; letter-spacing: -0.3px;
+            background: linear-gradient(135deg, #fff, #4cc9f0);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .top-bar .brand i { -webkit-text-fill-color: #4361ee; font-size: 1rem; }
+        .top-bar .nav-links { display: flex; gap: 24px; }
+        .top-bar .nav-links a {
+            color: rgba(255,255,255,0.45); font-size: 0.82rem; text-decoration: none;
+            font-weight: 500; transition: color 0.2s;
+        }
+        .top-bar .nav-links a:hover { color: #4cc9f0; }
+        .github-btn {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 18px; border-radius: 10px; font-size: 0.82rem; font-weight: 600;
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.8); text-decoration: none; transition: all 0.3s;
+        }
+        .github-btn:hover { background: rgba(255,255,255,0.12); color: #fff; border-color: rgba(255,255,255,0.2); }
+
+        /* ─── Hero ─── */
+        .hero { text-align: center; padding: 80px 20px 50px; }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 7px 18px; border-radius: 30px; font-size: 0.72rem; font-weight: 600;
+            background: rgba(67,97,238,0.15); color: #4cc9f0;
+            border: 1px solid rgba(67,97,238,0.3);
+            margin-bottom: 28px; letter-spacing: 1.5px; text-transform: uppercase;
+        }
+        .hero-badge .pulse { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; animation: pulse-dot 2s infinite; }
+        @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+
+        .hero h1 {
+            font-size: clamp(2.4rem, 6vw, 4.2rem); font-weight: 900;
+            margin-bottom: 20px; line-height: 1.08; letter-spacing: -1.5px;
+            background: linear-gradient(135deg, #ffffff 20%, #a5c8ff 60%, #4361ee 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .hero h1 span { -webkit-text-fill-color: #4cc9f0; }
+        .hero .subtitle {
+            font-size: 1.05rem; color: rgba(255,255,255,0.55); max-width: 640px;
+            margin: 0 auto 40px; line-height: 1.75; font-weight: 400;
+        }
+
+        .hero-cta { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin-bottom: 56px; }
+        .btn-primary-custom {
+            display: inline-flex; align-items: center; gap: 9px;
+            padding: 13px 28px; border-radius: 12px; font-size: 0.92rem; font-weight: 700;
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            color: #fff; text-decoration: none; border: none;
+            box-shadow: 0 8px 30px rgba(67,97,238,0.35);
+            transition: all 0.3s; cursor: pointer;
+        }
+        .btn-primary-custom:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(67,97,238,0.5); color: #fff; }
+        .btn-secondary-custom {
+            display: inline-flex; align-items: center; gap: 9px;
+            padding: 13px 28px; border-radius: 12px; font-size: 0.92rem; font-weight: 600;
+            background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.8);
+            border: 1px solid rgba(255,255,255,0.12); text-decoration: none; transition: all 0.3s;
+        }
+        .btn-secondary-custom:hover { background: rgba(255,255,255,0.1); color: #fff; border-color: rgba(255,255,255,0.25); transform: translateY(-2px); }
+
+        /* Hero Stats */
+        .hero-stats {
+            display: flex; justify-content: center; gap: 0;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 20px; max-width: 560px; margin: 0 auto;
+            overflow: hidden;
+        }
+        .hero-stat {
+            flex: 1; text-align: center; padding: 22px 16px;
+            border-right: 1px solid rgba(255,255,255,0.07);
+        }
+        .hero-stat:last-child { border-right: none; }
+        .hero-stat .num { font-size: 1.8rem; font-weight: 800; color: #4cc9f0; line-height: 1.1; }
+        .hero-stat .label { font-size: 0.72rem; color: rgba(255,255,255,0.4); margin-top: 4px; font-weight: 500; letter-spacing: 0.3px; }
+
+        /* ─── Section Labels ─── */
+        .section-label {
+            text-align: center; margin-bottom: 14px;
+            font-size: 0.72rem; font-weight: 700; letter-spacing: 2.5px;
+            text-transform: uppercase; color: rgba(255,255,255,0.25);
+        }
+        .section-title {
+            text-align: center; font-size: 1.5rem; font-weight: 700;
+            margin-bottom: 40px; color: rgba(255,255,255,0.88);
+        }
+
+        /* ─── Portal Cards ─── */
+        .portals { padding: 70px 20px; max-width: 1100px; margin: 0 auto; width: 100%; }
+        .portal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+
+        .portal-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px; padding: 32px;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer; text-decoration: none; color: #fff;
+            position: relative; overflow: hidden; display: block;
+        }
+        .portal-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, var(--card-color), transparent);
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .portal-card::after {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.03) 0%, transparent 60%);
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .portal-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255,255,255,0.16);
+            box-shadow: 0 24px 60px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.05);
+            color: #fff;
+        }
+        .portal-card:hover::before, .portal-card:hover::after { opacity: 1; }
+
+        .card-icon {
+            width: 54px; height: 54px; border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; margin-bottom: 20px;
+            background: rgba(255,255,255,0.05);
+            color: var(--card-color);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .card-arrow {
+            position: absolute; top: 28px; right: 28px;
+            width: 30px; height: 30px; border-radius: 50%;
+            background: rgba(255,255,255,0.04);
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s; font-size: 0.65rem;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .portal-card:hover .card-arrow { background: var(--card-color); border-color: var(--card-color); color: #fff; transform: translateX(3px); }
+
+        .portal-card h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.3px; }
+        .portal-card .card-desc { font-size: 0.83rem; color: rgba(255,255,255,0.45); line-height: 1.65; margin-bottom: 20px; }
+
         .card-features { list-style: none; padding: 0; margin: 0; }
-        .card-features li { font-size: 0.8rem; color: rgba(255,255,255,0.4); padding: 4px 0; }
-        .card-features li i { color: var(--card-color); margin-right: 8px; font-size: 0.7rem; }
-        .card-arrow { position: absolute; top: 32px; right: 32px; width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
-        .portal-card:hover .card-arrow { background: var(--card-color); color: #fff; transform: translateX(4px); }
+        .card-features li { font-size: 0.78rem; color: rgba(255,255,255,0.38); padding: 4px 0; display: flex; align-items: center; gap: 8px; }
+        .card-features li i { color: var(--card-color); font-size: 0.65rem; opacity: 0.8; }
 
-        /* Tech Stack */
-        .tech-stack { text-align: center; padding: 40px 20px; border-top: 1px solid rgba(255,255,255,0.05); }
-        .tech-stack p { color: rgba(255,255,255,0.3); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px; }
-        .tech-icons { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; }
-        .tech-icons span { padding: 6px 14px; border-radius: 8px; font-size: 0.8rem; background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.5); transition: all 0.3s ease; }
-        .tech-icons span:hover { background: rgba(67, 97, 238, 0.2); color: #4cc9f0; transform: translateY(-2px); }
+        .card-badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-size: 0.68rem; font-weight: 600; padding: 3px 10px; border-radius: 20px;
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.5); margin-top: 18px; letter-spacing: 0.5px;
+        }
 
-        /* Footer */
-        .site-footer { text-align: center; padding: 32px 20px; border-top: 1px solid rgba(255,255,255,0.05); margin-top: auto; }
-        .footer-links { display: flex; justify-content: center; gap: 28px; flex-wrap: wrap; margin-bottom: 16px; }
-        .footer-links a { color: rgba(255,255,255,0.4); font-size: 0.8rem; text-decoration: none; transition: color 0.3s ease; display: flex; align-items: center; gap: 6px; }
-        .footer-links a:hover { color: #4cc9f0; }
-        .footer-version { display: inline-flex; align-items: center; gap: 8px; padding: 4px 14px; border-radius: 12px; font-size: 0.7rem; background: rgba(67, 97, 238, 0.1); color: rgba(255,255,255,0.35); border: 1px solid rgba(67, 97, 238, 0.15); margin-bottom: 12px; }
+        /* ─── Demo Credentials Card ─── */
+        .demo-section { padding: 0 20px 70px; max-width: 1100px; margin: 0 auto; width: 100%; }
+        .demo-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px; padding: 36px 40px;
+            position: relative; overflow: hidden;
+        }
+        .demo-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, #4361ee, #4cc9f0, #7209b7);
+        }
+        .demo-card-header {
+            display: flex; align-items: center; gap: 14px; margin-bottom: 28px;
+        }
+        .demo-card-header .icon {
+            width: 42px; height: 42px; border-radius: 11px;
+            background: rgba(67,97,238,0.15); border: 1px solid rgba(67,97,238,0.25);
+            display: flex; align-items: center; justify-content: center; color: #4cc9f0; font-size: 1rem;
+        }
+        .demo-card-header h3 { font-size: 1.05rem; font-weight: 700; margin: 0; }
+        .demo-card-header p { font-size: 0.78rem; color: rgba(255,255,255,0.4); margin: 2px 0 0; }
+
+        .demo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+        .demo-item {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 14px; padding: 20px 22px;
+            transition: border-color 0.2s;
+        }
+        .demo-item:hover { border-color: rgba(255,255,255,0.15); }
+        .demo-item .portal-name {
+            font-size: 0.7rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+            color: var(--item-color); margin-bottom: 12px; display: flex; align-items: center; gap: 7px;
+        }
+        .demo-item .cred-row { margin-bottom: 8px; }
+        .demo-item .cred-label { font-size: 0.68rem; color: rgba(255,255,255,0.3); margin-bottom: 3px; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; }
+        .demo-item .cred-value {
+            font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+            font-size: 0.82rem; color: rgba(255,255,255,0.82);
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px; padding: 7px 12px; letter-spacing: 0.3px;
+            cursor: pointer; transition: all 0.2s; user-select: all;
+        }
+        .demo-item .cred-value:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.18); }
+        .demo-note { font-size: 0.75rem; color: rgba(255,255,255,0.25); margin-top: 20px; display: flex; align-items: center; gap: 6px; }
+
+        /* ─── Tech Stack ─── */
+        .tech-section { padding: 50px 20px; border-top: 1px solid rgba(255,255,255,0.05); }
+        .tech-section .section-label { margin-bottom: 24px; }
+        .tech-icons { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; max-width: 800px; margin: 0 auto; }
+        .tech-pill {
+            display: inline-flex; align-items: center; gap: 7px;
+            padding: 8px 16px; border-radius: 10px; font-size: 0.8rem; font-weight: 500;
+            background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.5);
+            border: 1px solid rgba(255,255,255,0.08); transition: all 0.3s;
+        }
+        .tech-pill:hover { background: rgba(67,97,238,0.15); color: #4cc9f0; border-color: rgba(67,97,238,0.3); transform: translateY(-2px); }
+        .tech-pill i { font-size: 0.9rem; }
+
+        /* ─── Footer ─── */
+        .site-footer {
+            text-align: center; padding: 36px 20px;
+            border-top: 1px solid rgba(255,255,255,0.05); margin-top: auto;
+        }
+        .footer-version {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 5px 16px; border-radius: 20px; font-size: 0.72rem;
+            background: rgba(67,97,238,0.1); color: rgba(255,255,255,0.35);
+            border: 1px solid rgba(67,97,238,0.15); margin-bottom: 18px;
+        }
         .footer-version .dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; animation: pulse-dot 2s infinite; }
-        @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-        .footer-copy { color: rgba(255,255,255,0.2); font-size: 0.7rem; }
+        .footer-links { display: flex; justify-content: center; gap: 28px; flex-wrap: wrap; margin-bottom: 18px; }
+        .footer-links a {
+            color: rgba(255,255,255,0.3); font-size: 0.78rem; text-decoration: none;
+            transition: color 0.2s; display: flex; align-items: center; gap: 6px; font-weight: 500;
+        }
+        .footer-links a:hover { color: #4cc9f0; }
+        .footer-copy { color: rgba(255,255,255,0.18); font-size: 0.7rem; }
 
+        /* ─── Responsive ─── */
         @media (max-width: 768px) {
-            .hero h1 { font-size: 2rem; }
-            .hero-stats { gap: 20px; }
-            .portal-grid { grid-template-columns: 1fr; }
+            .top-bar { padding: 16px 20px; }
+            .top-bar .nav-links { display: none; }
+            .hero h1 { font-size: 2.2rem; }
+            .portal-grid, .demo-grid { grid-template-columns: 1fr; }
+            .hero-stats { max-width: 100%; }
+            .demo-card { padding: 28px 24px; }
             .footer-links { gap: 16px; }
         }
     </style>
 </head>
 <body>
-    <div class="bg-particles"></div>
-    <div class="container-main">
-        <div class="hero">
-            <div class="hero-badge"><i class="fas fa-shield-alt me-2"></i>AI-Powered Government Platform</div>
-            <h1>Smart PDS</h1>
-            <p>Next-generation Public Distribution System with real-time monitoring, AI fraud detection, and seamless inventory management across India's ration network.</p>
-            <div class="hero-stats">
-                <div class="hero-stat"><div class="num">3</div><div class="label">Portals</div></div>
-                <div class="hero-stat"><div class="num">AI</div><div class="label">Fraud Detection</div></div>
-                <div class="hero-stat"><div class="num">Live</div><div class="label">Firebase Sync</div></div>
-            </div>
-        </div>
+    <div class="bg-orbs"></div>
+    <div class="bg-orb3"></div>
 
-        <div class="portals">
-            <h2>Select a Portal</h2>
+    <div class="container-main">
+
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <div class="brand">
+                <i class="fas fa-shield-alt"></i>
+                Smart PDS
+            </div>
+            <nav class="nav-links">
+                <a href="https://github.com/VaishakSCEM543/smart-public-distribution-system" target="_blank">Docs</a>
+                <a href="https://github.com/VaishakSCEM543/smart-public-distribution-system/blob/main/CHANGELOG.md" target="_blank">Changelog</a>
+                <a href="https://github.com/VaishakSCEM543/smart-public-distribution-system/blob/main/hardware" target="_blank">Hardware</a>
+            </nav>
+            <a class="github-btn" href="https://github.com/VaishakSCEM543/smart-public-distribution-system" target="_blank">
+                <i class="fab fa-github"></i> View on GitHub
+            </a>
+        </header>
+
+        <!-- Hero -->
+        <section class="hero">
+            <div class="hero-badge">
+                <span class="pulse"></span>
+                Live Firebase Sync · AI Fraud Detection · IoT Enabled
+            </div>
+            <h1>Smart <span>PDS</span></h1>
+            <p class="subtitle">
+                An end-to-end IoT + AI platform redesigning India's Public Distribution System —
+                fingerprint verification, real-time fraud alerts, and live inventory management
+                across three role-based web portals.
+            </p>
+            <div class="hero-cta">
+                <a href="#portals" class="btn-primary-custom">
+                    <i class="fas fa-rocket"></i> Explore Live Portals
+                </a>
+                <a href="https://github.com/VaishakSCEM543/smart-public-distribution-system" target="_blank" class="btn-secondary-custom">
+                    <i class="fab fa-github"></i> View Source
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="num">3</div>
+                    <div class="label">Web Portals</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="num">AI</div>
+                    <div class="label">Fraud Detection</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="num">IoT</div>
+                    <div class="label">ESP32 + R307</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="num">Live</div>
+                    <div class="label">Firebase Sync</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Portal Cards -->
+        <section class="portals" id="portals">
+            <div class="section-label">Role-Based Access</div>
+            <div class="section-title">Choose Your Portal</div>
             <div class="portal-grid">
+
+                <!-- Authority -->
                 <a href="web/authority/index.html" class="portal-card" style="--card-color: #4361ee;">
                     <div class="card-icon"><i class="fas fa-user-shield"></i></div>
-                    <div class="card-arrow"><i class="fas fa-arrow-right" style="font-size: 0.7rem;"></i></div>
+                    <div class="card-arrow"><i class="fas fa-arrow-right"></i></div>
                     <h3>Authority Portal</h3>
-                    <p>Government monitoring dashboard with AI-powered fraud detection and real-time analytics.</p>
+                    <p class="card-desc">Government monitoring dashboard with AI-powered fraud detection, real-time shop analytics, and interactive maps.</p>
                     <ul class="card-features">
-                        <li><i class="fas fa-check-circle"></i>Real-time shop monitoring</li>
-                        <li><i class="fas fa-check-circle"></i>AI risk scoring & fraud detection</li>
-                        <li><i class="fas fa-check-circle"></i>Interactive map & charts</li>
-                        <li><i class="fas fa-check-circle"></i>Smart AI chatbot analyst</li>
+                        <li><i class="fas fa-check-circle"></i>Real-time shop monitoring & risk scores</li>
+                        <li><i class="fas fa-check-circle"></i>AI fraud analyst chatbot</li>
+                        <li><i class="fas fa-check-circle"></i>Interactive Leaflet.js map</li>
+                        <li><i class="fas fa-check-circle"></i>Transaction audit trail</li>
                     </ul>
+                    <div class="card-badge"><i class="fas fa-circle" style="font-size:0.5rem;color:#22c55e;"></i> District / State / National levels</div>
                 </a>
 
-                <a href="web/customer/index.html" class="portal-card" style="--card-color: #2e7d32;">
-                    <div class="card-icon" style="background: rgba(46,125,50,0.15);"><i class="fas fa-users"></i></div>
-                    <div class="card-arrow"><i class="fas fa-arrow-right" style="font-size: 0.7rem;"></i></div>
+                <!-- Customer -->
+                <a href="web/customer/index.html" class="portal-card" style="--card-color: #2e9e5b;">
+                    <div class="card-icon" style="background: rgba(46,158,91,0.1);"><i class="fas fa-users"></i></div>
+                    <div class="card-arrow"><i class="fas fa-arrow-right"></i></div>
                     <h3>Customer Portal</h3>
-                    <p>Beneficiary-facing portal for viewing allocations, booking slots, and providing feedback.</p>
+                    <p class="card-desc">Beneficiary-facing portal for viewing ration allocations, booking queue slots, and tracking live stock availability.</p>
                     <ul class="card-features">
-                        <li><i class="fas fa-check-circle"></i>View monthly allocations</li>
-                        <li><i class="fas fa-check-circle"></i>Digital queue & slot booking</li>
-                        <li><i class="fas fa-check-circle"></i>Stock status tracking</li>
+                        <li><i class="fas fa-check-circle"></i>Monthly allocation overview</li>
+                        <li><i class="fas fa-check-circle"></i>Digital queue & QR token booking</li>
+                        <li><i class="fas fa-check-circle"></i>Live stock availability tracker</li>
                         <li><i class="fas fa-check-circle"></i>Feedback & rating system</li>
                     </ul>
+                    <div class="card-badge"><i class="fas fa-circle" style="font-size:0.5rem;color:#22c55e;"></i> Beneficiary access</div>
                 </a>
 
-                <a href="web/shop-owner/index.html" class="portal-card" style="--card-color: #f57c00;">
-                    <div class="card-icon" style="background: rgba(245,124,0,0.15);"><i class="fas fa-store"></i></div>
-                    <div class="card-arrow"><i class="fas fa-arrow-right" style="font-size: 0.7rem;"></i></div>
+                <!-- Shop Owner -->
+                <a href="web/shop-owner/index.html" class="portal-card" style="--card-color: #f07c00;">
+                    <div class="card-icon" style="background: rgba(240,124,0,0.1);"><i class="fas fa-store-alt"></i></div>
+                    <div class="card-arrow"><i class="fas fa-arrow-right"></i></div>
                     <h3>Shop Owner Portal</h3>
-                    <p>FPS owner dashboard for inventory management, queue control, and daily operations.</p>
+                    <p class="card-desc">FPS operator dashboard for managing real-time queue, live inventory data, and daily ration dispensation operations.</p>
                     <ul class="card-features">
-                        <li><i class="fas fa-check-circle"></i>Stock management</li>
-                        <li><i class="fas fa-check-circle"></i>Queue management system</li>
-                        <li><i class="fas fa-check-circle"></i>Transaction logging</li>
-                        <li><i class="fas fa-check-circle"></i>Schedule management</li>
+                        <li><i class="fas fa-check-circle"></i>Live queue management & token system</li>
+                        <li><i class="fas fa-check-circle"></i>Real-time Firebase inventory sync</li>
+                        <li><i class="fas fa-check-circle"></i>Dispensation flow chart</li>
+                        <li><i class="fas fa-check-circle"></i>Live activity feed</li>
                     </ul>
+                    <div class="card-badge"><i class="fas fa-circle" style="font-size:0.5rem;color:#22c55e;"></i> FPS operator access</div>
                 </a>
             </div>
-        </div>
+        </section>
 
-        <div class="tech-stack">
-            <p>Built With</p>
+        <!-- Demo Credentials -->
+        <section class="demo-section">
+            <div class="demo-card">
+                <div class="demo-card-header">
+                    <div class="icon"><i class="fas fa-key"></i></div>
+                    <div>
+                        <h3>Demo Credentials</h3>
+                        <p>Click any value to select it · Use these to explore the live portals</p>
+                    </div>
+                </div>
+                <div class="demo-grid">
+                    <div class="demo-item" style="--item-color: #4361ee;">
+                        <div class="portal-name"><i class="fas fa-user-shield"></i> Authority Portal</div>
+                        <div class="cred-row">
+                            <div class="cred-label">Email</div>
+                            <div class="cred-value">demo.authority@smartpds.gov</div>
+                        </div>
+                        <div class="cred-row">
+                            <div class="cred-label">Password</div>
+                            <div class="cred-value">demo1234</div>
+                        </div>
+                    </div>
+                    <div class="demo-item" style="--item-color: #2e9e5b;">
+                        <div class="portal-name"><i class="fas fa-users"></i> Customer Portal</div>
+                        <div class="cred-row">
+                            <div class="cred-label">Email</div>
+                            <div class="cred-value">demo.customer@smartpds.in</div>
+                        </div>
+                        <div class="cred-row">
+                            <div class="cred-label">Password</div>
+                            <div class="cred-value">demo1234</div>
+                        </div>
+                    </div>
+                    <div class="demo-item" style="--item-color: #f07c00;">
+                        <div class="portal-name"><i class="fas fa-store-alt"></i> Shop Owner Portal</div>
+                        <div class="cred-row">
+                            <div class="cred-label">Email</div>
+                            <div class="cred-value">terminal-8921@smartpds.gov</div>
+                        </div>
+                        <div class="cred-row">
+                            <div class="cred-label">Password</div>
+                            <div class="cred-value">secure_access_001</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="demo-note">
+                    <i class="fas fa-info-circle"></i>
+                    These are read-only demo accounts. Data shown is for demonstration purposes.
+                </div>
+            </div>
+        </section>
+
+        <!-- Tech Stack -->
+        <div class="tech-section">
+            <div class="section-label">Built With</div>
             <div class="tech-icons">
-                <span><i class="fab fa-html5 me-1"></i>HTML5</span>
-                <span><i class="fab fa-js me-1"></i>JavaScript</span>
-                <span><i class="fab fa-bootstrap me-1"></i>Bootstrap 5</span>
-                <span><i class="fas fa-fire me-1"></i>Firebase</span>
-                <span><i class="fas fa-robot me-1"></i>AI Analytics</span>
-                <span><i class="fas fa-map me-1"></i>Leaflet.js</span>
+                <span class="tech-pill"><i class="fab fa-html5"></i> HTML5 / CSS3</span>
+                <span class="tech-pill"><i class="fab fa-js"></i> Vanilla JS</span>
+                <span class="tech-pill"><i class="fab fa-bootstrap"></i> Bootstrap 5</span>
+                <span class="tech-pill"><i class="fas fa-fire"></i> Firebase RTDB</span>
+                <span class="tech-pill"><i class="fas fa-fire"></i> Firebase Auth</span>
+                <span class="tech-pill"><i class="fas fa-robot"></i> AI Chatbot</span>
+                <span class="tech-pill"><i class="fas fa-map"></i> Leaflet.js</span>
+                <span class="tech-pill"><i class="fas fa-chart-line"></i> Chart.js</span>
+                <span class="tech-pill"><i class="fas fa-microchip"></i> ESP32</span>
+                <span class="tech-pill"><i class="fas fa-fingerprint"></i> R307 Fingerprint</span>
+                <span class="tech-pill"><i class="fas fa-weight-hanging"></i> HX711 Load Cell</span>
             </div>
         </div>
 
+        <!-- Footer -->
         <footer class="site-footer">
-            <div class="footer-version"><span class="dot"></span> v3.5.0 — Active Development</div>
+            <div class="footer-version"><span class="dot"></span> v3.6.0 · Active Development</div>
             <div class="footer-links">
-                <a href="https://github.com/VaishakSCEM543/smart-public-distribution-system" target="_blank"><i class="fab fa-github"></i>GitHub</a>
-                <a href="https://github.com/VaishakSCEM543/smart-public-distribution-system/blob/main/CHANGELOG.md" target="_blank"><i class="fas fa-list-alt"></i>Changelog</a>
-                <a href="https://github.com/VaishakSCEM543/smart-public-distribution-system/blob/main/docs/api-reference.md" target="_blank"><i class="fas fa-book"></i>API Docs</a>
-                <a href="https://github.com/VaishakSCEM543/smart-public-distribution-system/blob/main/CONTRIBUTING.md" target="_blank"><i class="fas fa-code-branch"></i>Contribute</a>
-                <a href="https://github.com/VaishakSCEM543/smart-public-distribution-system/blob/main/SECURITY.md" target="_blank"><i class="fas fa-shield-alt"></i>Security</a>
+                <a href="https://github.com/VaishakSCEM543/smart-public-distribution-system" target="_blank">
+                    <i class="fab fa-github"></i> GitHub
+                </a>
+                <a href="https://github.com/VaishakSCEM543/smart-public-distribution-system/blob/main/CHANGELOG.md" target="_blank">
+                    <i class="fas fa-list-alt"></i> Changelog
+                </a>
+                <a href="https://github.com/VaishakSCEM543/smart-public-distribution-system/blob/main/docs" target="_blank">
+                    <i class="fas fa-book"></i> Docs
+                </a>
+                <a href="https://github.com/VaishakSCEM543/smart-public-distribution-system/blob/main/CONTRIBUTING.md" target="_blank">
+                    <i class="fas fa-code-branch"></i> Contribute
+                </a>
+                <a href="https://github.com/VaishakSCEM543/smart-public-distribution-system/blob/main/hardware" target="_blank">
+                    <i class="fas fa-microchip"></i> Hardware
+                </a>
             </div>
-            <div class="footer-copy">© 2026 Team UDBHAV · Smart India Hackathon · MIT License</div>
+            <div class="footer-copy">© 2026 Team UDBHAV · Vaishak S, SCEM · Smart India Hackathon · MIT License</div>
         </footer>
     </div>
 </body>

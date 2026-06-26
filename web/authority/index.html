@@ -3,10 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart PDS - Enhanced Authority Dashboard v3.0</title>
-    
-    <!-- Security Note: Firebase config should be loaded from environment variables -->
-    <!-- In production, move Firebase initialization to server-side -->
+    <title>Smart PDS — Authority Dashboard</title>
+    <meta name="description" content="Smart PDS Authority Portal — real-time shop monitoring, AI fraud detection, and government-level analytics for India's Public Distribution System.">
+    <meta property="og:title" content="Smart PDS — Authority Dashboard">
+    <meta property="og:description" content="Government monitoring dashboard with AI fraud detection, real-time shop analytics, and interactive maps for India's PDS network.">
+    <meta property="og:url" content="https://vaishakscem543.github.io/smart-public-distribution-system/web/authority/">
+    <meta property="og:type" content="website">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -46,7 +49,7 @@
         }
         
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             color: #333;
@@ -712,8 +715,8 @@
                             </span>
                         </button>
                         
-                        <button type="button" class="btn btn-outline-primary" id="demoLoginBtn">
-                            <i class="fas fa-bolt me-2"></i>Quick Demo Access
+                        <button type="button" class="btn btn-outline-secondary" id="demoLoginBtn" style="border-color:rgba(255,255,255,0.15);color:rgba(255,255,255,0.6);font-size:0.85rem;">
+                            <i class="fas fa-play-circle me-2"></i>Auto-fill Demo Credentials
                         </button>
                         
                         <div class="text-center mt-3">
@@ -1412,11 +1415,7 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     
     <!-- Firebase -->
-    <!-- SECURITY NOTE: In production, this should be loaded from environment variables -->
-    <!-- Consider using Firebase Admin SDK on server-side for sensitive operations -->
     <script type="module">
-        // Firebase Configuration
-        // WARNING: This should be moved to environment variables in production
         const firebaseConfig = {
             apiKey: "AIzaSyD8tOpjuDF1Xq_3DxNSgkU4dYzE2pBI6mQ",
             authDomain: "pdssytm.firebaseapp.com",
@@ -2881,8 +2880,8 @@
                 
                 // Demo login
                 DOM.demoLoginBtn.addEventListener('click', async () => {
-                    DOM.authEmail.value = 'demo.officer@fooddept.gov.in';
-                    DOM.authPassword.value = 'demo@123';
+                    DOM.authEmail.value = 'demo.authority@smartpds.gov';
+                    DOM.authPassword.value = 'demo1234';
                     DOM.authRole.value = 'state';
                     await this.handleLogin();
                 });
@@ -3756,6 +3755,39 @@
                 }
             });
         }
+    </script>
+
+    <!-- Dashboard Footer Strip -->
+    <style>
+        .dashboard-footer-strip {
+            position: fixed; bottom: 0; left: var(--sidebar-width); right: 0;
+            height: 32px; background: rgba(10,10,20,0.7); backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex; align-items: center; justify-content: flex-end;
+            padding: 0 24px; z-index: 500;
+            font-size: 0.68rem; color: rgba(255,255,255,0.2); font-family: 'Inter', sans-serif;
+            letter-spacing: 0.3px;
+        }
+        .dashboard-footer-strip a { color: rgba(255,255,255,0.25); text-decoration: none; }
+        .dashboard-footer-strip a:hover { color: rgba(255,255,255,0.5); }
+        #dashboardSection .main-content { padding-bottom: 40px; }
+    </style>
+    <div class="dashboard-footer-strip" id="dashFooter" style="display:none;">
+        Smart PDS &nbsp;·&nbsp; Authority Dashboard &nbsp;·&nbsp;
+        <a href="https://github.com/VaishakSCEM543/smart-public-distribution-system" target="_blank" style="margin-left:6px;">
+            <i class="fab fa-github"></i> GitHub
+        </a>
+        &nbsp;·&nbsp; © 2026 Team UDBHAV
+    </div>
+    <script>
+        // Show footer strip when dashboard is visible
+        const _dashObs = new MutationObserver(() => {
+            const ds = document.getElementById('dashboardSection');
+            const df = document.getElementById('dashFooter');
+            if (ds && df) df.style.display = ds.style.display === 'none' || ds.classList.contains('d-none') ? 'none' : 'flex';
+        });
+        const _dsEl = document.getElementById('dashboardSection');
+        if (_dsEl) _dashObs.observe(_dsEl, { attributes: true, attributeFilter: ['style', 'class'] });
     </script>
 </body>
 </html>
